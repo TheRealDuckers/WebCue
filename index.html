@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebCue Lab v3.1</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #ddd;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 180px;
+      background: #222;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      border-right: 1px solid #444;
+    }
+    .sidebar button {
+      padding: 12px;
+      background: #333;
+      border: 1px solid #555;
+      color: #33aaff;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    h1 {
+      margin-top: 0;
+      color: #33aaff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #333;
+      vertical-align: top;
+    }
+    tr.active { background-color: #004477; }
+    tr.next { background-color: #222; color: #aaa; }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 4px;
+      background: #000;
+      color: #ddd;
+      border: 1px solid #444;
+      border-radius: 3px;
+    }
+    .fadebar {
+      height: 4px;
+      background: #33aaff;
+      margin-top: 4px;
+      width: 0%;
+      transition: width linear;
+    }
+    #statusBar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #222;
+      color: #33aaff;
+      font-size: 14px;
+      padding: 10px;
+      border-top: 1px solid #444;
+      font-family: 'Segoe UI', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <button onclick="goCue()">🟢 GO</button>
+      <button onclick="fadeCue()">🎚️ Fade</button>
+      <button onclick="stopAll()">⏹️ Stop All</button>
+    </div>
+    <div class="main">
+      <h1>🎭 WebCue Lab v3.1</h1>
+      <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
+      <table id="cueTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Notes</th><th>Lighting Cue (QLC+)</th><th>Timer</th><th>Auto</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="statusBar">Status: Ready</div>
+
+  <script>
+    let cues = [];
+    let currentCueIndex = 0;
+    let audioCtx = null;
+    let preset = null;
+
+    function addCues(files) {
+      Array.from(files).forEach((file, i) => {
+        const id = 'cue-' + Date.now() + '-' + i;
+        const url = URL.createObjectURL(file);
+        const audio = new Audio(url);
+        audio.crossOrigin = 'anonymous';
+
+        cues.push({
+          id,
+          audio,
+          file,
+          number: cues.length + 1,
+          name: file.name.replace(/\.[^/.]+$/, ""),
+          notes: "",
+          lightingFunctionId: null,
+          elapsed: 0,
+          autoAdvance: "Manual"
+        });
+
+        audio.addEventListener('ended', () => {
+          if (cues[currentCueIndex].autoAdvance === "Auto") {
+            currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
+            goCue();
+          } else {
+            renderCues();
+          }
+        });
+      });
+      renderCues();
+    }
+
+    function renderCues() {
+      const tbody = document.querySelector('#cueTable tbody');
+      tbody.innerHTML = '';
+      cues.forEach((cue, i) => {
+        const row = document.createElement('tr');
+        if (i === currentCueIndex) row.classList.add('active');
+        else if (i === currentCueIndex + 1) row.classList.add('next');
+
+        row.innerHTML = `
+          <td><input type="text" value="${cue.number}" onchange="updateCue(${i}, 'number', this.value)" /></td>
+          <td><input type="text" value="${cue.name}" onchange="updateCue(${i}, 'name', this.value)" /></td>
+          <td><input type="text" value="${cue.notes}" onchange="updateCue(${i}, 'notes', this.value)" /></td>
+          <td><input type="number" value="${cue.lightingFunctionId || ''}" onchange="updateCue(${i}, 'lightingFunctionId', parseInt(this.value) || null)" /></td>
+          <td id="timer-${cue.id}">0:00</td>
+          <td>
+            <select onchange="updateCue(${i}, 'autoAdvance', this.value)">
+              <option ${cue.autoAdvance === "Manual" ? "selected" : ""}>Manual</option>
+              <option ${cue.autoAdvance === "Auto" ? "selected" : ""}>Auto</option>
+            </select>
+            <div class="fadebar" id="fade-${cue.id}"></div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateCue(index, field, value) {
+      cues[index][field] = value;
+    }
+
+    function goCue() {
+      const cue = cues[currentCueIndex];
+      if (!cue) return;
+      if (!audioCtx) audioCtx = new AudioContext();
+      cue.audio.currentTime = 0;
+      cue.audio.play();
+      if (cue.lightingFunctionId != null) {
+        fetch('http://192.168.24.10:9999/qlcplusWS', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'selectFunction', id: cue.lightingFunctionId })
+        });
+      }
+      renderCues();
+    }
+
+function fadeCue() {
+  const cue = cues[currentCueIndex];
+  if (!cue) return;
+
+  const fadeBar = document.getElementById(`fade-${cue.id}`);
+  fadeBar.style.transition = 'width 2s linear';
+  fadeBar.style.width = '100%';
+
+  if (!audioCtx) audioCtx = new AudioContext();
+
+  // Hook up gain if not already connected
+  if (!cue.filters?.gainNode) {
+    const source = audioCtx.createMediaElementSource(cue.audio);
+    const gain = audioCtx.createGain();
+    source.connect(gain);
+    gain.connect(audioCtx.destination);
+    cue.filters = { gainNode: gain };
+  }
+
+  // Perform audio fade over 2 seconds
+  const now = audioCtx.currentTime;
+  cue.filters.gainNode.gain.cancelScheduledValues(now);
+  cue.filters.gainNode.gain.setValueAtTime(1, now);
+  cue.filters.gainNode.gain.linearRampToValueAtTime(0, now + 2);
+
+  setTimeout(() => {
+    cue.audio.pause();
+    cue.audio.currentTime = 0;
+    fadeBar.style.transition = 'none';
+    fadeBar.style.width = '0%';
+    renderCues();
+  }, 2000);
+}
+
+    function stopAll() {
+      cues.forEach(cue => {
+        cue.audio.pause();
+        cue.audio.currentTime = 0;
+        const fader = document.getElementById(`fade-${cue.id}`);
+        if (fader) fader.style.width = '0%';
+      });
+      currentCueIndex = 0;
+      renderCues();
+    }
+
+    function updateStatusBar() {
+      const bar = document.getElementById('statusBar');
+      const cue = cues[currentCueIndex];
+      const next = cues[currentCueIndex + 1];
+      const statusParts = [];
+
+      if (cue) {
+        const name = cue.name || 'Unnamed Cue';
+        const time = cue.audio?.currentTime || 0;
+        const mins = Math.floor(time / 60);
+        const secs = Math.floor(time % 60).toString().padStart(2, '0');
+        statusParts.push(`🟢 GO: ${name} (${mins}:${secs})`);
+        if (cue.lightingFunctionId != null) {
+          statusParts.push(`💡 Lighting Cue: Function ${cue.lightingFunctionId}`);
+        }
+      }
+
+      if (next) {
+        const nextName = next.name || 'Unnamed';
+        statusParts.push(`Next: ${nextName}`);
+      }
+
+      bar.textContent = statusParts.join(' — ');
+    }
+
+        setInterval(() => {
+      cues.forEach(cue => {
+        if (!cue.audio.paused) {
+          cue.elapsed = Math.floor(cue.audio.currentTime);
+          const timer = document.getElementById(`timer-${cue.id}`);
+          if (timer) {
+            const mins = Math.floor(cue.elapsed / 60);
+            const secs = cue.elapsed % 60;
+            timer.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+          }
+        }
+      });
+      updateStatusBar();
+    }, 500);
+    
+document.addEventListener('keydown', e => {
+  // GO cue with Spacebar
+  if (e.code === 'Space') {
+    e.preventDefault();
+    goCue();
+    currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
+    renderCues();
+    return;
+  }
+
+  // Navigate cues with arrows
+  if (e.code === 'ArrowUp') {
+    e.preventDefault();
+    currentCueIndex = Math.max(currentCueIndex - 1, 0);
+    renderCues();
+    return;
+  }
+
+  if (e.code === 'ArrowDown') {
+    e.preventDefault();
+    currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
+    renderCues();
+    return;
+  }
+});
+
+  </script>
+</body>
+</html>
+
