@@ -177,7 +177,9 @@
       if (!cue) return;
       if (!audioCtx) audioCtx = new AudioContext();
       cue.audio.currentTime = 0;
+      currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
       cue.audio.play();
+      renderCues();
       if (cue.lightingFunctionId != null) {
         fetch('http://192.168.24.10:9999/qlcplusWS', {
           method: 'POST',
