@@ -94,9 +94,17 @@
       <h1>🎭 WebCue Lab v3.1</h1>
       <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
       <table id="cueTable">
+          <colgroup>
+    <col style="width: 60px" />
+    <col style="width: 200px" />
+    <col style="width: 300px" />
+    <col style="width: 120px" />
+    <col style="width: 80px" />
+    <col style="width: 100px" />
+  </colgroup>
         <thead>
           <tr>
-            <th>#</th><th>Name</th><th>Notes</th><th>Lighting Cue (QLC+)</th><th>Timer</th><th>Auto</th>
+            <th>#</th><th>Name</th><th>Notes</th><th>Lighting Cue (QLC+)</th><th>Timer</th><th>Follow</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -302,6 +310,32 @@ document.addEventListener('keydown', e => {
 });
 
   </script>
+<script>
+document.querySelectorAll('#cueTable th').forEach((th, i) => {
+  th.style.position = 'relative';
+  const grip = document.createElement('div');
+  grip.style.width = '5px';
+  grip.style.height = '100%';
+  grip.style.position = 'absolute';
+  grip.style.top = '0';
+  grip.style.right = '0';
+  grip.style.cursor = 'col-resize';
+  grip.addEventListener('mousedown', initDrag);
+  th.appendChild(grip);
+
+  function initDrag(e) {
+    e.preventDefault();
+    document.onmousemove = (ev) => {
+      const newWidth = ev.clientX - th.getBoundingClientRect().left;
+      document.querySelector(`#cueTable col:nth-child(${i + 1})`).style.width = newWidth + 'px';
+    };
+    document.onmouseup = () => {
+      document.onmousemove = null;
+      document.onmouseup = null;
+    };
+  }
+});
+</script>
 </body>
 </html>
 
