@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+</head>
 <head>
   <meta charset="UTF-8">
   <title>WebCue Lab v3.1</title>
@@ -91,7 +97,7 @@
       <button onclick="stopAll()">⏹️ Stop All</button>
     </div>
     <div class="main">
-      <h1>🎭 WebCue Lab v3.1</h1>
+      <h1 class="animate__animated animate__jackInTheBox animate__rollIn">🎭 WebCue Lab v3.1</h1>
       <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
       <table id="cueTable">
           <colgroup>
