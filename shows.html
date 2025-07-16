@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Cue Vault</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #ddd;
+      padding: 20px;
+    }
+    h1 {
+      color: #33aaff;
+      margin-bottom: 20px;
+    }
+    .vaultGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .showCard {
+      background: #222;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .showCard h3 {
+      margin: 0;
+      color: #33aaff;
+    }
+    .showCard p {
+      margin: 0;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .showCard button {
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      background: #333;
+      color: #ddd;
+    }
+    #statusBar {
+      margin-top: 30px;
+      padding: 12px;
+      background: #222;
+      border-top: 1px solid #444;
+      color: #33aaff;
+      font-size: 14px;
+    }
+    #backBtn {
+      margin-top: 30px;
+      background: #444;
+      color: #33aaff;
+      padding: 10px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎛️ Web Cue Vault</h1>
+  <div class="vaultGrid" id="vaultGrid"></div>
+  <button id="backBtn" onclick="window.location.href='cue-lab-v3.2.html'">⬅️ Back to Cue Lab</button>
+  <div id="statusBar">Status: Vault Ready</div>
+
+  <script>
+    function showStatusMessage(msg, duration = 3000) {
+      const bar = document.getElementById("statusBar");
+      bar.textContent = `🛎️ ${msg}`;
+      setTimeout(() => bar.textContent = "Status: Vault Ready", duration);
+    }
+
+    function renderVault() {
+      const grid = document.getElementById("vaultGrid");
+      grid.innerHTML = '';
+      const keys = Object.keys(localStorage).filter(k => k.startsWith("cueShow_v3_"));
+      if (keys.length === 0) {
+        grid.innerHTML = '<p>No shows saved.</p>';
+        return;
+      }
+
+      keys.forEach(key => {
+        const name = key.replace("cueShow_v3_", "");
+        const raw = localStorage.getItem(key);
+        let cueCount = 0;
+        try {
+          const data = JSON.parse(raw);
+          cueCount = data.length;
+        } catch {}
+
+        const card = document.createElement("div");
+        card.className = "showCard";
+        card.innerHTML = `
+          <h3>${name}</h3>
+          <p>💡 ${cueCount} cue${cueCount !== 1 ? "s" : ""}</p>
+          <button onclick="openShow('${name}')">▶️ Open Show</button>
+          <button onclick="deleteShow('${name}')">🗑️ Delete</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openShow(name) {
+      sessionStorage.setItem("loadShowName", name);
+      window.location.href = "cue-lab-v3.2.html";
+    }
+
+    function deleteShow(name) {
+      if (confirm(`Delete show "${name}"?`)) {
+        localStorage.removeItem(`cueShow_v3_${name}`);
+        showStatusMessage(`🗑️ "${name}" deleted.`);
+        renderVault();
+      }
+    }
+
+    renderVault();
+  </script>
+</body>
+</html>
