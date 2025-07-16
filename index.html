@@ -147,35 +147,45 @@
     let audioCtx = null;
     let preset = null;
 
-    function addCues(files) {
-      Array.from(files).forEach((file, i) => {
-        const id = 'cue-' + Date.now() + '-' + i;
-        const url = URL.createObjectURL(file);
-        const audio = new Audio(url);
-        audio.crossOrigin = 'anonymous';
+ function addCues(files) {
+  // If cues already exist, try auto-matching instead of creating new ones
+  if (cues.length > 0 && cues[0].audio.src === "") {
+    matchAudioFiles(files); // <-- your matching function
+    return;
+  }
 
-        cues.push({
-          id,
-          audio,
-          file,
-          number: cues.length + 1,
-          name: file.name.replace(/\.[^/.]+$/, ""),
-          notes: "",
-          lightingFunctionId: null,
-          elapsed: 0,
-          autoAdvance: "Manual"
-        });
+  // Otherwise, create new cue entries as usual
+  Array.from(files).forEach((file, i) => {
+    const id = 'cue-' + Date.now() + '-' + i;
+    const url = URL.createObjectURL(file);
+    const audio = new Audio(url);
+    audio.crossOrigin = 'anonymous';
 
-        audio.addEventListener('ended', () => {
-          if (cues[currentCueIndex].autoAdvance === "Auto") {
-            goCue();
-          } else {
-            renderCues();
-          }
-        });
-      });
-      renderCues();
-    }
+    cues.push({
+      id,
+      audio,
+      file,
+      number: cues.length + 1,
+      name: file.name.replace(/\.[^/.]+$/, ""),
+      notes: "",
+      lightingFunctionId: null,
+      elapsed: 0,
+      autoAdvance: "Manual",
+      fileName: file.name
+    });
+
+    audio.addEventListener('ended', () => {
+      if (cues[currentCueIndex].autoAdvance === "Auto") {
+        goCue();
+      } else {
+        renderCues();
+      }
+    });
+  });
+
+  renderCues();
+}
+
 
     function renderCues() {
       const tbody = document.querySelector('#cueTable tbody');
@@ -214,6 +224,7 @@
       cue.audio.currentTime = 0;
       currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
       cue.audio.play();
+      updateStatusBar();
       renderCues();
       if (cue.lightingFunctionId != null) {
         fetch('http://localhost:9999/qlcplusWS', {
