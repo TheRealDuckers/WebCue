@@ -95,7 +95,28 @@
       <button class="animate__animated animate__jackInTheBox" onclick="goCue()">🟢 GO</button>
       <button class="animate__animated animate__jackInTheBox" onclick="fadeCue()">🎚️ Fade</button>
       <button class="animate__animated animate__jackInTheBox" onclick="stopAll()">⏹️ Stop All</button>
+      <button class="animate__animated animate__jackInTheBox" onclick="openSavePopup()">💾 Save Show</button>
+      <button class="animate__animated animate__jackInTheBox" onclick="openLoadPopup()">📂 Load Show</button>
+
     </div>
+   <div id="savePopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
+     background:#222; padding:20px; border:1px solid #555; z-index:1000; border-radius:10px; color:#fff;">
+  <h3 class="animate__animated animate__jackInTheBox">💾 Save Show</h3>
+  <input type="text" id="popupShowName" placeholder="Enter show name" style="width:100%; margin-bottom:10px;" />
+  <button class="animate__animated animate__jackInTheBox" onclick="confirmSavePopup()">✅ Save</button>
+  <button class="animate__animated animate__jackInTheBox" onclick="closeSavePopup()">❌ Cancel</button>
+</div>
+<div id="loadPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
+     background:#222; padding:20px; border:1px solid #555; z-index:1001; border-radius:10px; color:#fff;">
+  <h3 class="animate__animated animate__jackInTheBox">📂 Load Saved Show</h3>
+  <select id="loadShowSelect" style="width:100%; margin-bottom:10px;">
+    <!-- options injected dynamically -->
+  </select>
+  <button class="animate__animated animate__jackInTheBox" onclick="confirmLoadPopup()">✅ Load</button>
+  <button class="animate__animated animate__jackInTheBox" onclick="closeLoadPopup()">❌ Cancel</button>
+</div>
+
+
     <div class="main">
       <h1 class="animate__animated animate__jackInTheBox animate__rollIn">🎭 WebCue Lab v3.1</h1>
       <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
@@ -341,7 +362,72 @@ document.querySelectorAll('#cueTable th').forEach((th, i) => {
     };
   }
 });
+
+function openSavePopup() {
+  document.getElementById('savePopup').style.display = 'block';
+}
+
+function closeSavePopup() {
+  document.getElementById('savePopup').style.display = 'none';
+}
+
+function confirmSavePopup() {
+  const name = document.getElementById('popupShowName').value.trim();
+  if (!name) return alert("⚠️ Enter a show name!");
+  const data = JSON.stringify(cues.map(cue => ({
+    number: cue.number,
+    name: cue.name,
+    notes: cue.notes,
+    lightingFunctionId: cue.lightingFunctionId,
+    autoAdvance: cue.autoAdvance,
+    fileName: cue.file?.name
+  })));
+  localStorage.setItem(`cueShow_v3_${name}`, data);
+  closeSavePopup();
+  refreshShowDropdown();
+  alert(`✅ Show "${name}" saved!`);
+}
+
 </script>
+<script>
+function openLoadPopup() {
+  const select = document.getElementById("loadShowSelect");
+  select.innerHTML = "";
+  Object.keys(localStorage)
+    .filter(k => k.startsWith("cueShow_v3_"))
+    .forEach(k => {
+      const opt = document.createElement("option");
+      opt.value = k.replace("cueShow_v3_", "");
+      opt.textContent = opt.value;
+      select.appendChild(opt);
+    });
+  document.getElementById("loadPopup").style.display = "block";
+}
+
+function closeLoadPopup() {
+  document.getElementById("loadPopup").style.display = "none";
+}
+
+function confirmLoadPopup() {
+  const name = document.getElementById("loadShowSelect").value;
+  const raw = localStorage.getItem(`cueShow_v3_${name}`);
+  if (!raw) return alert("❌ Show not found.");
+  const data = JSON.parse(raw);
+
+  cues = data.map((cue, i) => ({
+    id: 'cue-' + Date.now() + '-' + i,
+    audio: new Audio(), // user must reimport manually
+    file: null,
+    elapsed: 0,
+    ...cue
+  }));
+
+  currentCueIndex = 0;
+  renderCues();
+  closeLoadPopup();
+  alert(`✅ Show "${name}" loaded!`);
+}
+</script>
+
 </body>
 </html>
-
