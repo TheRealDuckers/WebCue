@@ -3,4 +3,6 @@
 <h4>Your welcome.</h4>
 <p>Go, Stop All, Fade</p>
 <p>Bulk upload cues</p>
-<p>INTERGRATE WITH QLC+ FOR LIGHTING! Simply run qlc webserver (using -w --web) and enter scene numbers in Lighting Cue (find by going to QLC+, making a function, than adding a new script, then pressing start function. You should get something like <em> startfunction:3 // New Scene 3 </em>. Enter the Last number in the script produced.  </p>
+
+<h2>1. Setting Up a Show</h2>
+<p> 1. Go to <a href="https://therealduckers.github.io/WebCue">therealduckers.github.io/WebCue</a></p>
