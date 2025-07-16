@@ -168,7 +168,6 @@
 
         audio.addEventListener('ended', () => {
           if (cues[currentCueIndex].autoAdvance === "Auto") {
-            currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
             goCue();
           } else {
             renderCues();
