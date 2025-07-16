@@ -14,3 +14,11 @@
 <p>Setting a cue to Manual in the Follow field will require a user to press "GO" before the cue plays.</p>
 <p>Setting a cue to Auto in the Follow field will automatically play the cue once the one before it has finsihed.</p>
 <P>(see these options by using the dropdown in the Follow field.</P>
+
+<h4>Lighting Cues (QLC+)</h4>
+<p>To use lighting cues:</p>
+<p>Start QLC+ with the -w or --web option</p>
+<p>Create a function</p>
+<p>Then, create a script, (still in functions tab) and press the Add symbol in the side pane, and press Start Function (you can also create cues to Stop Functions, chnage fixtures, etc.)</p>
+<p>You will get an output like startfunction:1 // New Scene 1, take the last number (in this case 1) and enter that into the lighting cue box in WebCue</p>
+<p>Now, whenever you trigger that cue, that lighting cue will be sent to QLC+!</p>
