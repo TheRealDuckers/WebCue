@@ -195,7 +195,7 @@
       cue.audio.play();
       renderCues();
       if (cue.lightingFunctionId != null) {
-        fetch('http://192.168.24.10:9999/qlcplusWS', {
+        fetch('http://localhost:9999/qlcplusWS', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'selectFunction', id: cue.lightingFunctionId })
