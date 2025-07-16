@@ -315,7 +315,6 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Space') {
     e.preventDefault();
     goCue();
-    currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
     renderCues();
     return;
   }
