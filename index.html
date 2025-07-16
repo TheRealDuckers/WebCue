@@ -311,29 +311,34 @@ function fadeCue() {
     }, 500);
     
 document.addEventListener('keydown', e => {
-  // GO cue with Spacebar
+  // Skip global shortcuts if focus is on input or textarea
+  const active = document.activeElement;
+  const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+  if (isTyping) return;
+
+  // Spacebar GO
   if (e.code === 'Space') {
     e.preventDefault();
     goCue();
+    currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
     renderCues();
-    return;
   }
 
-  // Navigate cues with arrows
+  // Arrows for cue selection
   if (e.code === 'ArrowUp') {
     e.preventDefault();
     currentCueIndex = Math.max(currentCueIndex - 1, 0);
     renderCues();
-    return;
   }
 
   if (e.code === 'ArrowDown') {
     e.preventDefault();
     currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
     renderCues();
-    return;
   }
 });
+
+
 
   </script>
 <script>
