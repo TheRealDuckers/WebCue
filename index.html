@@ -427,6 +427,31 @@ function confirmLoadPopup() {
   closeLoadPopup();
   alert(`✅ Show "${name}" loaded!`);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const name = sessionStorage.getItem("loadShowName");
+  if (name) {
+    sessionStorage.removeItem("loadShowName");
+    confirmLoadFromVault(name);
+  }
+});
+
+function confirmLoadFromVault(name) {
+  const raw = localStorage.getItem(`cueShow_v3_${name}`);
+  if (!raw) return showStatusMessage("❌ Show not found.");
+  const data = JSON.parse(raw);
+  cues = data.map((cue, i) => ({
+    id: 'cue-' + Date.now() + '-' + i,
+    audio: new Audio(),
+    file: null,
+    elapsed: 0,
+    ...cue
+  }));
+  currentCueIndex = 0;
+  renderCues();
+  showStatusMessage(`✅ Loaded show "${name}"`);
+}
+
 </script>
 
 </body>
