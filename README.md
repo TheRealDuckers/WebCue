@@ -9,7 +9,7 @@
 <p> 2. Select "Choose Files" (<em>Note: Make sure your files upload in the order you want them to appear in WebCue</em>) </p>
 <p> 3. Once your files have uploaded, they will appear in the WebCue interface. You can now change names, add notes, and set lighting cues</p>
 <p> 4. To save, press "Save Show" and enter a name</p>
-<p> 5. To load a show, press "Load Show" then select the show you want from the dropdown menu</p>
+<p> 5. To load a show, press "Load Show" then select the show you want from the dropdown menu. Then, re-upload all the audio files. It will automatically re-attach the audio with the cue name, number, lighting cue etc. (note: the name of the song in WebCue DOES NOT need to be the same name as the file (e.g. yoursong.mp3) for this to work) </p>
 
 <h2>Features</h2>
 <h4>Cue advance options</h4>
