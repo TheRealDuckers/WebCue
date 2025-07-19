@@ -8,7 +8,7 @@
 </head>
 <head>
   <meta charset="UTF-8">
-  <title>WebCue Lab v3.1</title>
+  <title>WebCue Lab v3.2</title>
   <style>
     body {
       margin: 0;
@@ -191,7 +191,7 @@
 function matchAudioFiles(files) {
   let matched = 0;
   Array.from(files).forEach(file => {
-    const cue = cues.find(c => c.fileName === file.name);
+    cue.fileName.trim().toLowerCase() === file.name.trim().toLowerCase()
     if (cue) {
       const url = URL.createObjectURL(file);
       cue.audio = new Audio(url);
