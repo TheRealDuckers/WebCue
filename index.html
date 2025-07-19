@@ -97,6 +97,8 @@
       <button class="animate__animated animate__jackInTheBox" onclick="stopAll()">⏹️ Stop All</button>
       <button class="animate__animated animate__jackInTheBox" onclick="openSavePopup()">💾 Save Show</button>
       <button class="animate__animated animate__jackInTheBox" onclick="openLoadPopup()">📂 Load Show</button>
+      <button class="animate__animated animate__jackInTheBox" onclick="toggleFullscreen()">🧭 Fullscreen</button>
+
 
     </div>
    <div id="savePopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
@@ -186,6 +188,20 @@
   renderCues();
 }
 
+function matchAudioFiles(files) {
+  let matched = 0;
+  Array.from(files).forEach(file => {
+    const cue = cues.find(c => c.fileName === file.name);
+    if (cue) {
+      const url = URL.createObjectURL(file);
+      cue.audio = new Audio(url);
+      cue.file = file;
+      matched++;
+    }
+  });
+  renderCues();
+  showStatusMessage(`🎧 Matched ${matched} file${matched !== 1 ? 's' : ''}.`);
+}
 
     function renderCues() {
       const tbody = document.querySelector('#cueTable tbody');
@@ -465,6 +481,31 @@ function confirmLoadFromVault(name) {
   renderCues();
   showStatusMessage(`✅ Loaded show "${name}"`);
 }
+
+function toggleFullscreen() {
+  const elem = document.documentElement; // or any container element
+
+  if (!document.fullscreenElement) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { // Safari
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE
+      elem.msRequestFullscreen();
+    }
+    showStatusMessage("🔎 Entering fullscreen...");
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+    showStatusMessage("🔙 Exiting fullscreen.");
+  }
+}
+
 
 </script>
 
