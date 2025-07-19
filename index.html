@@ -8,7 +8,7 @@
 </head>
 <head>
   <meta charset="UTF-8">
-  <title>WebCue Lab v3.2</title>
+  <title>WebCue Lab v3.1</title>
   <style>
     body {
       margin: 0;
@@ -302,6 +302,7 @@ function fadeCue() {
       const cue = cues[currentCueIndex];
       const next = cues[currentCueIndex + 1];
       const statusParts = [];
+    
 
       if (cue) {
         const name = cue.name || 'Unnamed Cue';
@@ -368,6 +369,14 @@ document.addEventListener('keydown', e => {
 
   </script>
 <script>
+function showStatusMessage(message, duration = 3000) {
+  const bar = document.getElementById("statusBar");
+  bar.textContent = `${message}`;
+  setTimeout(() => {
+    bar.textContent = "Status: Ready"; // or whatever your default is
+  }, duration);
+}
+
 document.querySelectorAll('#cueTable th').forEach((th, i) => {
   th.style.position = 'relative';
   const grip = document.createElement('div');
@@ -505,8 +514,11 @@ function toggleFullscreen() {
     showStatusMessage("🔙 Exiting fullscreen.");
   }
 }
-
-
+function testMsg(){
+ showStatusMessage("Status Bar Test Sucsess!")
+}
+function admin(){
+ showStatusMessage("Hello, You found the secret function!")
 </script>
 
 </body>
