@@ -520,6 +520,33 @@ function testMsg(){
 function admin(){
  showStatusMessage("Hello, You found the secret function!")
 }
+
+let touchStartX = null;
+
+document.addEventListener("touchstart", e => {
+  const touch = e.changedTouches[0];
+  touchStartX = touch.screenX;
+});
+
+document.addEventListener("touchend", e => {
+  if (touchStartX === null) return;
+
+  const touchEndX = e.changedTouches[0].screenX;
+  const diff = touchEndX - touchStartX;
+
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) {
+      goCue();
+      showStatusMessage("➡️ Swipe GO triggered");
+    } else {
+      fadeCue?.(); // or stopAll();
+      showStatusMessage("⬅️ Swipe FADE triggered");
+    }
+  }
+
+  touchStartX = null;
+});
+
 </script>
 
 </body>
