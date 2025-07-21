@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -153,6 +154,7 @@
   // If cues already exist, try auto-matching instead of creating new ones
   if (cues.length > 0 && cues[0].audio.src === "") {
     matchAudioFiles(files); // <-- your matching function
+    console.log("🔍 matchAudioFiles called with", files.length, "files");
     return;
   }
 
@@ -190,17 +192,27 @@
 
 function matchAudioFiles(files) {
   let matched = 0;
+
   Array.from(files).forEach(file => {
-    cue.fileName.trim().toLowerCase() === file.name.trim().toLowerCase()
+    const name = file.name.trim().toLowerCase();
+    const cue = cues.find(c => c.fileName && c.fileName.trim().toLowerCase() === name);
+
     if (cue) {
       const url = URL.createObjectURL(file);
-      cue.audio = new Audio(url);
+      const audio = new Audio(url);
+      audio.crossOrigin = 'anonymous';
+      cue.audio = audio;
       cue.file = file;
       matched++;
+      console.log(`✅ Matched: ${name}`);
+    } else {
+      console.warn(`❌ No match for: ${name}`);
     }
   });
+
   renderCues();
-  showStatusMessage(`🎧 Matched ${matched} file${matched !== 1 ? 's' : ''}.`);
+  updateAudioSyncPanel?.();
+  showStatusMessage(`🎧 Matched ${matched} file${matched !== 1 ? 's' : ''}`);
 }
 
     function renderCues() {
