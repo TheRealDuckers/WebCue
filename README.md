@@ -6,7 +6,7 @@
  <em>NOTE: Some back-end parts of this service where partly coded by AI - this is a new concept to me and I needed help :-)</em>
 <h2>Docs<h2>
 <h3>Setting Up a Show</h3>
-<p> 1. Go to <a href="https://duckwhizz.uk/WebCue-App">duckwhizz.uk/WebCue-App</a></p>
+<p> 1. Go to <a href="https://therealduckers.github.io/WebCue">the Github Pages site</a></p>
 <p> 2. Select "Choose Files" (<em>Note: Make sure your files upload in the order you want them to appear in WebCue</em>) </p>
 <p> 3. Once your files have uploaded, they will appear in the WebCue interface. You can now change names, add notes, and set lighting cues</p>
 <p> 4. To save, press "Save Show" and enter a name</p>
