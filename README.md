@@ -30,5 +30,13 @@
 <p>Simply add /BETA onto any url within webcue (jokes - only on the main page)</p>
 <p>Current BETA features: Left/Right arrow is GO/Fade and swipe left/right is also GO/Fade</p>
 
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+
+<p></p>
+<p></p>
+<p></p>
 
 <p>Made with ❤️ by Duckers</p>
