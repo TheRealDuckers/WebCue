@@ -87,6 +87,17 @@
       border-top: 1px solid #444;
       font-family: 'Segoe UI', sans-serif;
     }
+
+    .button3.1 {
+      padding: 12px;
+      background: #333;
+      border: 1px solid #555;
+      color: #33aaff;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -107,17 +118,17 @@
      background:#222; padding:20px; border:1px solid #555; z-index:1000; border-radius:10px; color:#fff;">
   <h3 class="animate__animated animate__jackInTheBox">💾 Save Show</h3>
   <input type="text" id="popupShowName" placeholder="Enter show name" style="width:100%; margin-bottom:10px;" />
-  <button class="animate__animated animate__jackInTheBox" onclick="confirmSavePopup()">✅ Save</button>
-  <button class="animate__animated animate__jackInTheBox" onclick="closeSavePopup()">❌ Cancel</button>
+  <button class="button3.1 animate__animated animate__jackInTheBox" onclick="confirmSavePopup()">✅ Save</button>
+  <button class="button3.1 animate__animated animate__jackInTheBox" onclick="closeSavePopup()">❌ Cancel</button>
 </div>
 <div id="loadPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
      background:#222; padding:20px; border:1px solid #555; z-index:1001; border-radius:10px; color:#fff;">
-  <h3 class="animate__animated animate__jackInTheBox">📂 Load Saved Show</h3>
+  <h3 class="button3.1 animate__animated animate__jackInTheBox">📂 Load Saved Show</h3>
   <select id="loadShowSelect" style="width:100%; margin-bottom:10px;">
     <!-- options injected dynamically -->
   </select>
-  <button class="animate__animated animate__jackInTheBox" onclick="confirmLoadPopup()">✅ Load</button>
-  <button class="animate__animated animate__jackInTheBox" onclick="closeLoadPopup()">❌ Cancel</button>
+  <button class="button3.1 animate__animated animate__jackInTheBox" onclick="confirmLoadPopup()">✅ Load</button>
+  <button class="button3.1 animate__animated animate__jackInTheBox" onclick="closeLoadPopup()">❌ Cancel</button>
   <a href="shows">Go to Show Vault (manager)</a>
 </div>
 
