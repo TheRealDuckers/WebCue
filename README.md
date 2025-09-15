@@ -4,7 +4,7 @@
 <p>Go, Stop All, Fade</p>
 <p>Bulk upload cues</p>
  <em>NOTE: Some back-end parts of this service where partly coded by AI - this is a new concept to me and I needed help :-)</em>
-<h2>Docs<h2>
+<h2>📄 Docs</h2>
 <h3>Setting Up a Show</h3>
 <p> 1. Go to <a href="https://therealduckers.github.io/WebCue">the Github Pages site</a></p>
 <p> 2. Select "Choose Files" (<em>Note: Make sure your files upload in the order you want them to appear in WebCue</em>) </p>
@@ -12,7 +12,7 @@
 <p> 4. To save, press "Save Show" and enter a name</p>
 <p> 5. To load a show, press "Load Show" then select the show you want from the dropdown menu. Then, re-upload all the audio files. It will automatically re-attach the audio with the cue name, number, lighting cue etc. (note: the name of the song in WebCue DOES NOT need to be the same name as the file (e.g. yoursong.mp3) for this to work) </p>
 
-<h3>Features</h3>
+<h3>🎚️ Features</h3>
 <h4>Cue advance options</h4>
 <p>Setting a cue to Manual in the Follow field will require a user to press "GO" before the cue plays.</p>
 <p>Setting a cue to Auto in the Follow field will automatically play the cue once the one before it has finsihed.</p>
