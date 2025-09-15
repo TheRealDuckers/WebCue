@@ -26,7 +26,7 @@
 <p>You will get an output like startfunction:1 // New Scene 1, take the last number (in this case 1) and enter that into the lighting cue box in WebCue</p>
 <p>Now, whenever you trigger that cue, that lighting cue will be sent to QLC+!</p>
 
-<h4>BETA mode (for the ones who are feeking spicy)</h4>
+<h4>BETA mode (for the ones who are feeling spicy)</h4>
 <p>Simply add /BETA onto any url within webcue (jokes - only on the main page)</p>
 <p>Current BETA features: Left/Right arrow is GO/Fade and swipe left/right is also GO/Fade</p>
 <p> Also, <a href="https://therealduckers.github.io/WebCue/tuner">here</a> is a cool little tool AI made. It shows bass, treble, pan, graphs etc. #nerdy! However, it currently doesn't work when you play music to test audio quality, so hold on whilst I fix that.</p>
