@@ -27,7 +27,7 @@
 <h4>BETA mode (for the ones who are feeling spicy)</h4>
 <p>Simply add /BETA onto any url within webcue (jokes - only on the main page)</p>
 <p>Current BETA features: Left/Right arrow is GO/Fade and swipe left/right is also GO/Fade</p>
-<p> Also, <a href="https://therealduckers.github.io/WebCue/tuner">here</a> is a cool little tool AI made. It shows bass, treble, pan, graphs etc. #nerdy! However, it currently doesn't work when you play music to test audio quality, so hold on whilst I fix that.</p>
+<p> Also, <a href="https://therealduckers.github.io/WebCue/tune">here</a> is a cool little tool AI made. It shows bass, treble, pan, graphs etc. #nerdy! However, it currently doesn't work when you play music to test audio quality, so hold on whilst I fix that.</p>
 
 
 <p>Made with ❤️ by Duckers</p>
