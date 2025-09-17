@@ -152,14 +152,14 @@
     let preset = null;
 
  function addCues(files) {
-  // If cues already exist, try auto-matching instead of creating new ones
+
   if (cues.length > 0 && cues[0].audio.src === "") {
     matchAudioFiles(files); // <-- your matching function
     console.log("🔍 matchAudioFiles called with", files.length, "files");
     return;
   }
 
-  // Otherwise, create new cue entries as usual
+ 
   Array.from(files).forEach((file, i) => {
     const id = 'cue-' + Date.now() + '-' + i;
     const url = URL.createObjectURL(file);
