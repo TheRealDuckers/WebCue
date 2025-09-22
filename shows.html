@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Web Cue Vault</title>
+  <title>Web Cue - Shows</title>
   <style>
     body {
       margin: 0;
@@ -86,7 +86,7 @@
       grid.innerHTML = '';
       const keys = Object.keys(localStorage).filter(k => k.startsWith("cueShow_v3_"));
       if (keys.length === 0) {
-        grid.innerHTML = '<p>No shows saved.</p>';
+        grid.innerHTML = '<p>No shows saved. To save a show, press "Save Show" in the sidebar whilst in Cue Lab mode.</p>';
         return;
       }
 
@@ -105,7 +105,7 @@
           <h3>${name}</h3>
           <p>💡 ${cueCount} cue${cueCount !== 1 ? "s" : ""}</p>
           <button onclick="openShow('${name}')">▶️ Open Show</button>
-          <button onclick="deleteShow('${name}')">🗑️ Delete</button>
+          <button onclick="deleteShow('${name}')">🗑️ Delete Show</button>
         `;
         grid.appendChild(card);
       });
@@ -117,7 +117,7 @@
     }
 
     function deleteShow(name) {
-      if (confirm(`Delete show "${name}"?`)) {
+      if (confirm(`Delete show "${name}"? This action cannot be undone.`)) {
         localStorage.removeItem(`cueShow_v3_${name}`);
         showStatusMessage(`🗑️ "${name}" deleted.`);
         renderVault();
