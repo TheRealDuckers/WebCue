@@ -96,9 +96,87 @@
       <button class="animate__animated animate__jackInTheBox" onclick="goCue()">🟢 GO</button>
       <button class="animate__animated animate__jackInTheBox" onclick="fadeCue()">🎚️ Fade</button>
       <button class="animate__animated animate__jackInTheBox" onclick="stopAll()">⏹️ Stop All</button>
-      <button class="animate__animated animate__jackInTheBox" onclick="openSavePopup()">💾 Save Show</button>
-      <button class="animate__animated animate__jackInTheBox" onclick="openLoadPopup()">📂 Load Show</button>
+      
       <button class="animate__animated animate__jackInTheBox" onclick="toggleFullscreen()">🧭 Fullscreen</button>
+      <button onclick="saveShowToLocalStorage()">💾 Save Show</button>
+<button onclick="loadShowFromLocalStorage()">📂 Load Show</button>
+
+<script>
+  let cues = [];
+  let currentCueIndex = 0;
+
+  function saveShowToLocalStorage() {
+    const showName = prompt("Enter show name:");
+    if (!showName) return;
+
+    const showData = cues.map(cue => ({
+      name: cue.name,
+      fileName: cue.fileName,
+      notes: cue.notes,
+      lightingFunctionId: cue.lightingFunctionId,
+      autoAdvance: cue.autoAdvance
+    }));
+
+    localStorage.setItem(`webcue-show-${showName}`, JSON.stringify(showData));
+    alert(`💾 Saved show "${showName}"`);
+  }
+
+  async function loadShowFromLocalStorage() {
+    const showName = prompt("Enter show name to load:");
+    const showDataRaw = localStorage.getItem(`webcue-show-${showName}`);
+    if (!showDataRaw) {
+      alert(`No saved show named "${showName}"`);
+      return;
+    }
+
+    const showData = JSON.parse(showDataRaw);
+    const dirHandle = await window.showDirectoryPicker();
+
+    const audioFiles = [];
+    for await (const [name, handle] of dirHandle.entries()) {
+      if (handle.kind === 'file' && name.match(/\.(mp3|wav|ogg)$/i)) {
+        const file = await handle.getFile();
+        audioFiles.push({ name, file });
+      }
+    }
+
+    cues = [];
+    for (const cueData of showData) {
+      const match = audioFiles.find(f => f.name === cueData.fileName);
+      if (!match) continue;
+
+      const url = URL.createObjectURL(match.file);
+      const audio = new Audio(url);
+      audio.crossOrigin = 'anonymous';
+
+      const id = 'cue-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+      cues.push({
+        id,
+        audio,
+        file: match.file,
+        number: cues.length + 1,
+        name: cueData.name,
+        notes: cueData.notes,
+        lightingFunctionId: cueData.lightingFunctionId,
+        elapsed: 0,
+        autoAdvance: cueData.autoAdvance,
+        fileName: cueData.fileName
+      });
+
+      audio.addEventListener('ended', () => {
+        if (cues[currentCueIndex].autoAdvance === "Auto") {
+          goCue();
+        } else {
+          renderCues();
+        }
+      });
+    }
+
+    renderCues();
+    alert(`📂 Loaded ${cues.length} cue${cues.length !== 1 ? 's' : ''} from "${showName}"`);
+  }
+</script>
+
 
 
     </div>
