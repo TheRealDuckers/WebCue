@@ -101,6 +101,33 @@
       <button onclick="saveShow()">💾 Save Show</button>
 <button onclick="loadShow()">📂 Load Show</button>
       <script>
+            function renderCues() {
+      const tbody = document.querySelector('#cueTable tbody');
+      tbody.innerHTML = '';
+      cues.forEach((cue, i) => {
+        const row = document.createElement('tr');
+        if (i === currentCueIndex) row.classList.add('active');
+        else if (i === currentCueIndex + 1) row.classList.add('next');
+
+        row.innerHTML = `
+          <td><input type="text" value="${cue.number}" onchange="updateCue(${i}, 'number', this.value)" /></td>
+          <td><input type="text" value="${cue.name}" onchange="updateCue(${i}, 'name', this.value)" /></td>
+          <td><input type="text" value="${cue.notes}" onchange="updateCue(${i}, 'notes', this.value)" /></td>
+          <td><input type="number" value="${cue.lightingFunctionId || ''}" onchange="updateCue(${i}, 'lightingFunctionId', parseInt(this.value) || null)" /></td>
+          <td id="timer-${cue.id}">0:00</td>
+          <td>
+            <select onchange="updateCue(${i}, 'autoAdvance', this.value)">
+              <option ${cue.autoAdvance === "Manual" ? "selected" : ""}>Manual</option>
+              <option ${cue.autoAdvance === "Auto" ? "selected" : ""}>Auto</option>
+            </select>
+            <div class="fadebar" id="fade-${cue.id}"></div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+      </script>
+      <script>
   let cues = [];
   let currentCueIndex = 0;
 
