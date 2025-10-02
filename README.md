@@ -10,7 +10,7 @@
 <p><b>If you are on Chrome, Edge, Opera or any Chronium Based browser,</b> you are in luck! Select "Choose Directory" and select the folder which your audio cues are in. You only have to select this folder when you want to re-load a show. Press "Save Show" to save and "Load Show" to load. When loading, press "Load Show" and then re-select the directory. All files will be auto-matched to the cue from the saved show.</p>
 
 <p><b>If you are on any other browser (Firefox, etc.), </b> you will have to re-upload all files (not a folder) when re-loading. Auto match will re-match your cues and audio automatically - even if you changed name, number etc.</p>
-<h3>🎚️ Features</h3>
+<h2>🎚️ Features</h2>
 <h4>Cue advance options</h4>
 <p>Setting a cue to Manual in the Follow field will require a user to press "GO" before the cue plays.</p>
 <p>Setting a cue to Auto in the Follow field will automatically play the cue once the one before it has finsihed.</p>
