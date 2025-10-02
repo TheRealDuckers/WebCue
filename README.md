@@ -1,5 +1,5 @@
-<h1>WebCue Lab v3.1</h1>
-<h3>A web version of QLab.</h3>
+<h1>WebCue Lab v3.2</h1>
+<h3>A web version of QLab. Docs v4.5</h3>
 <h4>Your welcome.</h4>
  <em>NOTE: Some back-end parts of this service where partly coded by AI - this is a new concept to me and I needed help :-)</em>
 <h2>📄 Docs</h2>
