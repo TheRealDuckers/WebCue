@@ -3,13 +3,13 @@
 <h4>Your welcome.</h4>
  <em>NOTE: Some back-end parts of this service where partly coded by AI - this is a new concept to me and I needed help :-)</em>
 <h2>📄 Docs</h2>
-<h3>Setting Up a Show</h3>
-<p> 1. Go to <a href="https://therealduckers.github.io/WebCue">the Github Pages site</a></p>
-<p> 2. Select "Choose Files" (<em>Note: Make sure your files upload in the order you want them to appear in WebCue</em>) </p>
-<p> 3. Once your files have uploaded, they will appear in the WebCue interface. You can now change names, add notes, and set lighting cues</p>
-<p> 4. To save, press "Save Show" and enter a name</p>
-<p> 5. To load a show, press "Load Show" then select the show you want from the dropdown menu. Then, re-upload all the audio files. It will automatically re-attach the audio with the cue name, number, lighting cue etc. (note: the name of the song in WebCue DOES NOT need to be the same name as the file (e.g. yoursong.mp3) for this to work) Because of browser restrictions it can't automatically retrive files - I found this is the best way to do it. Tip: It may take up to 10 sec for the music to play the first time you press go (every time you reload). Make sure you press go and test fade etc. if using on a live show. </p>
+<h3>Go to the <a href="https://therealduckers.github.io/WebCue">website</a></h3>
+<p>You will be asked what broswer you are on - this is because some browsers don't support certain features of WebCue, and using the wrong version may casue errors. If it doesn't detect your browser correctly, press "no" and select your browser manually. If you are on Opera, select Chrome as your browser. If you are on a Chronuim-based browser, then select Chrome as your browser. If you are not sure, select Other.</p>
 
+<h2>Upload your files</h2>
+<p><b>If you are on Chrome, Edge, Opera or any Chronium Based browser,</b> you are in luck! Select "Choose Directory" and select the folder which your audio cues are in. You only have to select this folder when you want to re-load a show. Press "Save Show" to save and "Load Show" to load. When loading, press "Load Show" and then re-select the directory. All files will be auto-matched to the cue from the saved show.</p>
+
+<p><b>If you are on any other browser (Firefox, etc.), </b> you will have to re-upload all files (not a folder) when re-loading. Auto match will re-match your cues and audio automatically - even if you changed name, number etc.</p>
 <h3>🎚️ Features</h3>
 <h4>Cue advance options</h4>
 <p>Setting a cue to Manual in the Follow field will require a user to press "GO" before the cue plays.</p>
