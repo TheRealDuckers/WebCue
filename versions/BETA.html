@@ -122,7 +122,68 @@
       <button onclick="saveShow()">💾 Save Show</button>
 <button onclick="loadShow()">📂 Load Show</button>
 
-      <script>
+      
+
+
+
+
+
+    </div>
+   <div id="savePopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
+     background:#222; padding:20px; border:1px solid #555; z-index:1000; border-radius:10px; color:#fff;">
+  <h3 class="animate__animated animate__jackInTheBox">💾 Save Show</h3>
+  <input type="text" id="popupShowName" placeholder="Enter show name" style="width:100%; margin-bottom:10px;" />
+  <button class="animate__animated animate__jackInTheBox" onclick="confirmSavePopup()">✅ Save</button>
+  <button class="animate__animated animate__jackInTheBox" onclick="closeSavePopup()">❌ Cancel</button>
+</div>
+<div id="loadPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
+     background:#222; padding:20px; border:1px solid #555; z-index:1001; border-radius:10px; color:#fff;">
+  <h3 class="animate__animated animate__jackInTheBox">📂 Load Saved Show</h3>
+  <select id="loadShowSelect" style="width:100%; margin-bottom:10px;">
+   
+  </select>
+  <button class="animate__animated animate__jackInTheBox" onclick="confirmLoadPopup()">✅ Load</button>
+  <button class="animate__animated animate__jackInTheBox" onclick="closeLoadPopup()">❌ Cancel</button>
+  <a href="shows">Go to Show Vault (manager)</a>
+  <p>Once a show is loaded, please re-upload any files used to make a show (it will auto match cues+files - just trust me on this one.)</p>
+</div>
+
+
+    <div class="main">
+<div class="animate__animated animate__backInDown" id="statusBartop">Status: Ready</div>
+       <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
+      
+
+
+<!-- File Selection Modal -->
+<div id="folderModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+  background:#222; padding:20px; border:1px solid #555; z-index:1002; border-radius:10px; color:#fff; max-height:60%; overflow-y:auto;">
+  <h3>Select Files to Include</h3>
+  <ul id="folderFileList" style="list-style:none; padding:0;"></ul>
+  <button onclick="confirmFolderSelection()">✅ Load Selected</button>
+  <button onclick="closeFolderModal()">❌ Cancel</button>
+</div>
+
+      <table id="cueTable">
+          <colgroup>
+    <col style="width: 60px" />
+    <col style="width: 200px" />
+    <col style="width: 300px" />
+    <col style="width: 120px" />
+    <col style="width: 80px" />
+    <col style="width: 100px" />
+  </colgroup>
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Notes</th><th>Lighting Cue (QLC+)</th><th>Timer</th><th>Follow</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="animate__animated animate__backInUp" id="statusBar">Status: Ready</div>
+<script>
             function renderCues() {
       const tbody = document.querySelector('#cueTable tbody');
       tbody.innerHTML = '';
@@ -227,67 +288,6 @@
     alert(`📂 Loaded ${cues.length} cue${cues.length !== 1 ? 's' : ''} from "${showName}"`);
   }
 </script>
-
-
-
-
-
-
-    </div>
-   <div id="savePopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
-     background:#222; padding:20px; border:1px solid #555; z-index:1000; border-radius:10px; color:#fff;">
-  <h3 class="animate__animated animate__jackInTheBox">💾 Save Show</h3>
-  <input type="text" id="popupShowName" placeholder="Enter show name" style="width:100%; margin-bottom:10px;" />
-  <button class="animate__animated animate__jackInTheBox" onclick="confirmSavePopup()">✅ Save</button>
-  <button class="animate__animated animate__jackInTheBox" onclick="closeSavePopup()">❌ Cancel</button>
-</div>
-<div id="loadPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
-     background:#222; padding:20px; border:1px solid #555; z-index:1001; border-radius:10px; color:#fff;">
-  <h3 class="animate__animated animate__jackInTheBox">📂 Load Saved Show</h3>
-  <select id="loadShowSelect" style="width:100%; margin-bottom:10px;">
-   
-  </select>
-  <button class="animate__animated animate__jackInTheBox" onclick="confirmLoadPopup()">✅ Load</button>
-  <button class="animate__animated animate__jackInTheBox" onclick="closeLoadPopup()">❌ Cancel</button>
-  <a href="shows">Go to Show Vault (manager)</a>
-  <p>Once a show is loaded, please re-upload any files used to make a show (it will auto match cues+files - just trust me on this one.)</p>
-</div>
-
-
-    <div class="main">
-<div class="animate__animated animate__backInDown" id="statusBartop">Status: Ready</div>
-       <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
-      
-
-
-<!-- File Selection Modal -->
-<div id="folderModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-  background:#222; padding:20px; border:1px solid #555; z-index:1002; border-radius:10px; color:#fff; max-height:60%; overflow-y:auto;">
-  <h3>Select Files to Include</h3>
-  <ul id="folderFileList" style="list-style:none; padding:0;"></ul>
-  <button onclick="confirmFolderSelection()">✅ Load Selected</button>
-  <button onclick="closeFolderModal()">❌ Cancel</button>
-</div>
-
-      <table id="cueTable">
-          <colgroup>
-    <col style="width: 60px" />
-    <col style="width: 200px" />
-    <col style="width: 300px" />
-    <col style="width: 120px" />
-    <col style="width: 80px" />
-    <col style="width: 100px" />
-  </colgroup>
-        <thead>
-          <tr>
-            <th>#</th><th>Name</th><th>Notes</th><th>Lighting Cue (QLC+)</th><th>Timer</th><th>Follow</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="animate__animated animate__backInUp" id="statusBar">Status: Ready</div>
 
   <script>
     let cues = [];
