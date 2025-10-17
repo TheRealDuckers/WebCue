@@ -33,15 +33,21 @@
       border-right: 1px solid #444;
     }
     .sidebar button {
-      padding: 12px;
-      background: #333;
-      border: 1px solid #555;
+      padding: 0px;
+      background: #222;
+      border: 0px;
       color: #33aaff;
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
+      transition: 0.2s ease-in-out;
     }
+    
+    .sidebar button:hover {
+    transform:scale(1.1)
+    }
+    
     .main {
       flex: 1;
       padding: 20px;
@@ -94,9 +100,9 @@
 <body>
   <div class="container">
     <div class="sidebar">
-      <button class="animate__animated animate__jackInTheBox" onclick="goCue()">🟢 GO</button>
-      <button class="animate__animated animate__jackInTheBox" onclick="fadeCue()">🎚️ Fade</button>
-      <button class="animate__animated animate__jackInTheBox" onclick="stopAll()">⏹️ Stop All</button>
+      <button class="animate__animated animate__jackInTheBox" onclick="goCue()"><img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/go.png" width="150" hieght="100"></button>
+      <button class="animate__animated animate__jackInTheBox" onclick="fadeCue()"><img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/fade.png" width="150" hieght="100"></button>
+      <button class="animate__animated animate__jackInTheBox" onclick="stopAll()"><img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/stop.png" width="150" hieght="100"></button>
       
       <button class="animate__animated animate__jackInTheBox" onclick="toggleFullscreen()">🧭 Fullscreen</button>
       <button onclick="saveShow()">💾 Save Show</button>
@@ -131,7 +137,7 @@
 
 
     <div class="main">
-      <h1 class="animate__animated animate__jackInTheBox animate__rollIn">🎭 WebCue Lab v3.1</h1>
+      <h1 class="animate__animated animate__jackInTheBox animate__rollIn"></h1>
       <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
       <!-- Folder Picker Trigger -->
 <button onclick="openFolderPicker()">📁 Load Cues from Folder</button>
