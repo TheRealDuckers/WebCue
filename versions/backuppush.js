@@ -749,6 +749,71 @@ async function confirmFolderSelection() {
       });
     }
 
+
+ function goCue() {
+      const cue = cues[currentCueIndex];
+      if (!cue) return;
+      if (!audioCtx) audioCtx = new AudioContext();
+      cue.audio.currentTime = 0;
+      currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
+      cue.audio.play();
+      updateStatusBar();
+      renderCues();
+      if (cue.lightingFunctionId != null) {
+        fetch('http://localhost:9999/qlcplusWS', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'selectFunction', id: cue.lightingFunctionId })
+        });
+      }
+      renderCues();
+    }
+
+function fadeCue() {
+  const cue = cues[currentCueIndex];
+  if (!cue) return;
+
+  const fadeBar = document.getElementById(`fade-${cue.id}`);
+  fadeBar.style.transition = 'width 2s linear';
+  fadeBar.style.width = '100%';
+
+  if (!audioCtx) audioCtx = new AudioContext();
+
+  // Hook up gain if not already connected
+  if (!cue.filters?.gainNode) {
+    const source = audioCtx.createMediaElementSource(cue.audio);
+    const gain = audioCtx.createGain();
+    source.connect(gain);
+    gain.connect(audioCtx.destination);
+    cue.filters = { gainNode: gain };
+  }
+
+  // Perform audio fade over 2 seconds
+  const now = audioCtx.currentTime;
+  cue.filters.gainNode.gain.cancelScheduledValues(now);
+  cue.filters.gainNode.gain.setValueAtTime(1, now);
+  cue.filters.gainNode.gain.linearRampToValueAtTime(0, now + 2);
+
+  setTimeout(() => {
+    cue.audio.pause();
+    cue.audio.currentTime = 0;
+    fadeBar.style.transition = 'none';
+    fadeBar.style.width = '0%';
+    renderCues();
+  }, 2000);
+}
+
+    function stopAll() {
+      cues.forEach(cue => {
+        cue.audio.pause();
+        cue.audio.currentTime = 0;
+        const fader = document.getElementById(`fade-${cue.id}`);
+        if (fader) fader.style.width = '0%';
+      });
+      currentCueIndex = 0;
+      renderCues();
+    }
+
     renderCues();
     alert(`📂 Loaded ${cues.length} cue${cues.length !== 1 ? 's' : ''} from "${showName}"`);
   }
