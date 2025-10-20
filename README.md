@@ -1,34 +1,108 @@
-<h1>WebCue Lab v3.5</h1>
-<h2> ALL PREVIOUS ERRORS FIXED!!! </h2>
-<h3>A web version of QLab. Docs v4.5</h3>
-<h4>Your welcome.</h4>
- <em>NOTE: Some back-end parts of this service where partly coded by AI - this is a new concept to me and I needed help :-)</em>
-<h2>📄 Docs</h2>
-<h3>Go to the <a href="https://therealduckers.github.io/WebCue">website</a></h3>
-<p>You will be asked what broswer you are on - this is because some browsers don't support certain features of WebCue, and using the wrong version may casue errors. If it doesn't detect your browser correctly, press "no" and select your browser manually. If you are on Opera, select Chrome as your browser. If you are on a Chronuim-based browser, then select Chrome as your browser. If you are not sure, select Other.</p>
+# WebCue Lab v3.5
 
-<h2>Upload your files</h2>
-<p><b>If you are on Chrome, Edge, Opera or any Chronium Based browser,</b> you are in luck! Select "Choose Directory" and select the folder which your audio cues are in. You only have to select this folder when you want to re-load a show. Press "Save Show" to save and "Load Show" to load. When loading, press "Load Show" and then re-select the directory. All files will be auto-matched to the cue from the saved show.</p>
+>### 🚨 ALL PREVIOUS ERRORS FIXED!!!
 
-<p><b>If you are on any other browser (Firefox, etc.), </b> you will have to re-upload all files (not a folder) when re-loading. Auto match will re-match your cues and audio automatically - even if you changed name, number etc.</p>
-<h2>🎚️ Features</h2>
-<h4>Cue advance options</h4>
-<p>Setting a cue to Manual in the Follow field will require a user to press "GO" before the cue plays.</p>
-<p>Setting a cue to Auto in the Follow field will automatically play the cue once the one before it has finsihed.</p>
-<P>(see these options by using the dropdown in the Follow field.</P>
+### A web version of QLab — Docs v4.5
 
-<h4>Lighting Cues (QLC+)</h4>
-<p>To use lighting cues:</p>
-<p>Start QLC+ with the -w or --web option</p>
-<p>Create a function</p>
-<p>Then, create a script, (still in functions tab) and press the Add symbol in the side pane, and press Start Function (you can also create cues to Stop Functions, chnage fixtures, etc.)</p>
-<p>You will get an output like startfunction:1 // New Scene 1, take the last number (in this case 1) and enter that into the lighting cue box in WebCue</p>
-<p>Now, whenever you trigger that cue, that lighting cue will be sent to QLC+!</p>
+#### You're welcome.
 
-<h4>BETA mode (for the ones who are feeling spicy)</h4>
-<p>Simply add /BETA onto any url within webcue (jokes - only on the main page)</p>
-<p>Current BETA features: Left/Right arrow is GO/Fade and swipe left/right is also GO/Fade</p>
-<p> Also, <a href="https://therealduckers.github.io/WebCue/tune">here</a> is a cool little tool AI made. It shows bass, treble, pan, graphs etc. #nerdy! However, it currently doesn't work when you play music to test audio quality, so hold on whilst I fix that.</p>
+---
 
+## 📘 WebCue Docs
 
-<p>Made with ❤️ by Duckers</p>
+### 🔍 Overview
+
+WebCue is a web-based alternative to QLab, designed to run audio and lighting cues directly in your browser. It’s perfect for live performances, theater productions, or any event needing a cool "GO" button.
+
+> _"Why use WebCue? It's a ‘cue’-less decision 😄."_
+
+---
+
+### ✨ Features
+
+- **Cue Management**: Manual or auto-advance cues. Like a playlist, but fewer awkward song choices.
+- **Lighting Integration**: Control QLC+ via web interface. _No disco ball required._
+- **File Upload**: Upload audio folders (Chrome/Edge) or individual files (others).
+- **BETA Features**: Swipe/arrow key shortcuts. Still buggy... use at your own risk.
+- **Cross-Browser Support**: Works, but Firefox/Safari need extra patience. Just use Chrome/Edge. Please and thank you.
+
+---
+
+### 🚀 Quick Start Guide
+
+1. **Open WebCue**: [Launch WebCue](https://therealduckers.github.io/WebCue)
+2. **Pick Your Browser Mode**:
+   - **Chromium (Chrome/Edge)**: Upload a **folder**. Easy.
+   - **Others**: Upload **files**.
+3. **Create Cues**:
+   - Rename, add notes, set **Follow** (Auto/Manual).
+   - **QLC+ Lighting**: see separate instructions below...
+4. **Save/Load Shows**: "Save Show" → "Load Show" → re-upload files/allow directory accsess (told you it would be easier)
+5. **Hit GO**:
+   - Click, spacebar, or **swipe left** (BETA).
+   - **Fade**: on current selected cue (use up and down arrow keys to select cues)
+   - **Stop**: Pretty obvious if you ask me....
+6. **Tips**:
+   - Auto-match cues to files. (don't need the same name on file as in WebCue...again, use chrome/edge and use a folder)
+   - _"If it glitches, it’s a feature, not a bug… right?"_ (just hurry up and report it...)
+
+---
+
+### 🎭 Use Cases
+
+- **Theater Productions**: Sync sound effects, music, and stage lighting.  
+  _Example_: Cue a thunderstorm sound + dim lights. (yes, that is the start of the Percy Jackson musical...)
+
+- **Live Music**: Trigger backing tracks and spotlights.  
+  _Example_: Guitar solo → spotlight + delay effect.
+
+- **Podcasts**: Play sound effects on cue.  
+  _Example_: "Dramatic pause" → suspenseful music.
+
+---
+
+### 💡 QLC+ Integration
+
+1. Launch QLC+ with `--web`.
+2. Create a function, grab the ID (e.g., `startfunction:1`).
+3. Paste it into WebCue’s lighting field.
+
+> _"Boom. Lights. 🎉"_
+
+---
+
+### ⌨️ Keyboard Shortcuts (BETA only)
+
+- **Left Arrow**: GO — _"Like advancing a cringe slideshow."_
+- **Right Arrow**: Fade — _"Like fading into the shadows… gracefully."_
+- **Swipe**: Mobile magic. Don’t trip.
+
+---
+
+### 🛠️ Troubleshooting
+
+- **Files Not Loading?**: Re-upload, or press GO and wait a minute. It's slow on first load.  
+  _"Restart the Wi-Fi. Or the universe."_
+
+- **Other Errors? Oh, goodie...**  
+  [Report Issues](https://github.com/TheRealDuckers/WebCue/issues) — _"No judgment. Just fix it."_
+
+---
+
+### 🤝 Contributing
+
+- Fork the repo: [WebCue on GitHub](https://github.com/TheRealDuckers/WebCue)
+- Fix a bug, add a feature, or a joke.
+- Docs: [WebCue Docs](https://github.com/TheRealDuckers/WebCue/blob/main/docs.html)
+
+---
+
+### 📄 License
+
+MIT — _"Use it, choose it, just don’t **relicense** it to confuse everyone."_
+
+Need help? Visit the [Wiki](https://github.com/TheRealDuckers/WebCue/wiki) or open an issue (that sigh you heard was me, btw...).
+
+---
+
+Made with ❤️ by **Duckers**
