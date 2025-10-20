@@ -65,7 +65,7 @@ WebCue is a web-based alternative to QLab, designed to run audio and lighting cu
 
 1. Launch QLC+ with `--web`.
 2. Create a function, grab the ID (e.g., `startfunction:1`).
-3. Paste it into WebCue’s lighting field.
+3. Paste the number (1 in this case) into WebCue’s lighting field.
 
 > _"Boom. Lights. 🎉"_
 
