@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebCue</title>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #222;
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      background-color: #890620;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px 20px;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #c8e6c9;
+    }
+
+    /* Header */
+    header {
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQavs6lA5z82vbHUY2pnNqUCQe5nndjFdQCo8z1dOZV9Qjp9Efr-x_YeacxWq2kLUBa5nE&usqp=CAU') center/cover no-repeat;
+      color: white;
+      padding: 100px 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.2em;
+    }
+
+    /* Sections */
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    h2 {
+      color: #890620;
+    }
+
+    /* Feature Cards */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 40px auto;
+      max-width: 1000px;
+      padding: 0 20px;
+    }
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #890620;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: #890620 rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card h3 {
+      color: #2f4b00;
+      margin-top: 0;
+    }
+
+    /* Buttons */
+    .button {
+      background-color: #890620;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+      transition: background-color 0.5s ease-in-out;
+    }
+    .button:hover {
+      background-color: #c64764;
+    }
+
+
+
+    /* Footer */
+    footer {
+      background-color: #e8f5e9;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #555;
+}
+
+
+  </style>
+  <style>
+    /* Scroll timeline for stacking effect */
+    @scroll-timeline stack-cards {
+      source: auto;
+      orientation: block;
+    }
+
+
+    .stack-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      max-width: 300px;
+      margin: 0 auto;
+      scroll-timeline-name: stack-cards;
+    }
+
+    .stack-card {
+      position: sticky;
+      top: 100px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      animation: stack linear forwards;
+      animation-timeline: stack-cards;
+      animation-range: entry 0% exit 100%;
+    }
+
+    @keyframes stack {
+      from {
+        transform: scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: scale(0.8);
+        opacity: 0.9;
+      }
+    }
+
+    .stack-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 data-aos="fade-down">WebCue</h1>
+    <p data-aos="fade-up">Browser-based cue control for live shows and media playback</p>
+  </header>
+
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#cue-stack">Controls</a>
+    <a href="#demo">WebCue</a>
+    <a href="https://github.com/TheRealDuckers/WebCue#webcue-lab-v35">Docs</a>
+    <a href="https://github.com/TheRealDuckers/WebCue">GitHub</a>
+  </nav>
+
+
+  <section class="section" id="features">
+    <h2 data-aos="fade-up">Features</h2>
+    <div class="card-container" data-aos="fade-up" data-aos-delay="100">
+      <div class="card">
+        <h3>🎛️ Cue Playback</h3>
+        <p>Trigger, fade, and manage multiple audio cues with precision and ease.</p>
+      </div>
+      <div class="card">
+        <h3>🎚️ Audio Tuner</h3>
+        <p>Adjust bass, treble, stereo pan, and visualize frequency in real time.</p>
+      </div>
+      <div class="card">
+        <h3>🧪 Beta Tools</h3>
+        <p>Test experimental features and help shape the future of WebCue.</p>
+      </div>
+      <div class="card">
+        <h3>🌐 Browser-Based</h3>
+        <p>No installation needed. Just open and go — works offline too.</p>
+      </div>
+    </div>
+    
+     <div class="stack-container">
+ <h2 style="text-align: center"></h2>
+    <div class="stack-card">
+      <img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/go.png" alt="Go" />
+    </div>
+    <div class="stack-card">
+      <img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/fade.png" alt="Fade" />
+    </div>
+    <div class="stack-card">
+      <img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/stop.png" alt="Stop" />
+    </div>
+    </div>
+    <a href="https://therealduckers.github.io/WebCue/website/go" class="button" data-aos="zoom-in">Launch WebCue</a>
+
+
+
+
+  <section class="section" id="demo">
+    <h2 data-aos="fade-up">Ready to streamline your production?</h2>
+    <p data-aos="fade-up" data-aos-delay="100">Try WebCue’s interfaces and cue manager directly in your browser.</p>
+    <a href="https://github.com/TheRealDuckers/WebCue" class="button" data-aos="zoom-in">View on Github</a>
+  </section>
+
+  <footer>
+    &copy; 2025 TheRealDuckers.
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
