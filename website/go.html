@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebCue | Browser Check</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      text-align: center;
+      padding: 50px;
+    }
+    .container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00ffe0;
+      display: inline-block;
+      max-width: 400px;
+    }
+    img {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 5px #00ffe0);
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    button, select {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .yes {
+      background-color: #00c853;
+      color: white;
+      box-shadow: 0 0 10px #00c853;
+    }
+    .no {
+      background-color: #d50000;
+      color: white;
+      box-shadow: 0 0 10px #d50000;
+    }
+    #mobile-warning {
+      margin-top: 20px;
+      color: #ff9800;
+      font-weight: bold;
+      display: none;
+    }
+    #manual-select {
+      margin-top: 20px;
+      display: none;
+    }
+    #manual-select select {
+      background-color: #2c2c2c;
+      color: #e0e0e0;
+      box-shadow: 0 0 10px #00ffe0;
+    }
+    #manual-select button {
+      background-color: #2196f3;
+      color: white;
+      box-shadow: 0 0 10px #2196f3;
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .modal-content {
+      background-color: #1e1e1e;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #ff4081;
+      width: 80%;
+      max-width: 400px;
+      color: #e0e0e0;
+      text-align: center;
+    }
+    .modal-content a {
+      color: #00bcd4;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .modal-content button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #ff4081;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <h2>To make sure WebCue works correctly, we need to check your browser and redirect you to the right place.</h2>
+  <h3>--------------------------------------------------</h3>
+    <img id="browser-icon" src="" alt="Browser Icon">
+    <h3 id="message">Detecting browser...</h3>
+    <button class="yes" onclick="redirect(true)">Yes</button>
+    <button class="no" onclick="showManualSelect()">No</button>
+
+    <div id="manual-select">
+      <p>Please select your browser manually:</p>
+      <select id="browser-choice">
+        <option value="Chrome">Chrome</option>
+        <option value="Firefox">Firefox</option>
+        <option value="Safari">Safari</option>
+        <option value="Edge">Edge</option>
+        <option value="Unknown">Other</option>
+      </select>
+      <br>
+      <button onclick="manualRedirect()">Go</button>
+    </div>
+
+    <div id="mobile-warning">⚠️ You appear to be on a mobile device. This site is in no way styled for mobile devices. Many features will not work. If you want, you can still <a href="https://therealduckers.github.io/WebCue">go ahead</a></div>
+  </div>
+
+  <!-- Fallback Modal -->
+  <div id="fallback-modal" class="modal">
+    <div class="modal-content">
+      <h2>⚠️ Unsupported or Unknown Browser</h2>
+      <p>We couldn’t identify your browser or it may not be supported.</p>
+      <p>Please try using <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/firefox/">Firefox</a>, <a href="https://www.apple.com/safari/">Safari</a>, or <a href="https://www.microsoft.com/edge">Edge</a>. If you want, you can still <a href="https://therealduckers.github.io/WebCue/versions/full">go ahead,</a> but some features may not work.</p> Using Opera? Select Chrome as your browser.
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const userAgent = navigator.userAgent;
+    let browser = "Unknown";
+    let icon = "";
+    let redirectLinks = {
+      Chrome: "https://therealduckers.github.io/WebCue/versions/full",
+      Firefox: "https://therealduckers.github.io/WebCue/versions/main",
+      Safari: "https://therealduckers.github.io/WebCue/versions/main",
+      Edge: "https://therealduckers.github.io/WebCue/versions/full",
+      Unknown: null // triggers fallback modal
+    };
+
+    if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
+      browser = "Chrome";
+      icon = "https://img.icons8.com/color/96/google-chrome.png";
+    } else if (userAgent.includes("Firefox")) {
+      browser = "Firefox";
+      icon = "https://img.icons8.com/color/96/firefox.png";
+    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+      browser = "Safari";
+      icon = "https://img.icons8.com/color/96/safari--v1.png";
+    } else if (userAgent.includes("Edg")) {
+      browser = "Edge";
+      icon = "https://img.icons8.com/color/96/ms-edge-new.png";
+    }
+
+    document.getElementById("message").textContent = `We detected your browser is ${browser}. Is this correct?`;
+    document.getElementById("browser-icon").src = icon;
+
+    function redirect(isCorrect) {
+      if (isCorrect) {
+        if (redirectLinks[browser]) {
+          window.location.href = redirectLinks[browser];
+        } else {
+          showFallbackModal();
+        }
+      } else {
+        showManualSelect();
+      }
+    }
+
+    function showManualSelect() {
+      document.getElementById("manual-select").style.display = "block";
+    }
+
+    function manualRedirect() {
+      const selectedBrowser = document.getElementById("browser-choice").value;
+      if (redirectLinks[selectedBrowser]) {
+        window.location.href = redirectLinks[selectedBrowser];
+      } else {
+        showFallbackModal();
+      }
+    }
+
+    function showFallbackModal() {
+      document.getElementById("fallback-modal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("fallback-modal").style.display = "none";
+    }
+
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(userAgent)) {
+      document.getElementById("mobile-warning").style.display = "block";
+    }
+  </script>
+</body>
+</html>
