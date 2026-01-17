@@ -1,193 +1,618 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
-</head>
 <head>
-  <meta charset="UTF-8">
-  <title>WebCue Lab v3.1</title>
+  <meta charset="UTF-8" />
+  <title>WebCue Lab v3.1 – Restyled</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <script src="backuppush.js"></script>
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: #ddd;
-    }
-    .container {
-      display: flex;
-      flex-direction: row;
-      height: 100vh;
-    }
-    .sidebar {
-      width: 180px;
-      background: #222;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      border-right: 1px solid #444;
-    }
-    .sidebar button {
-      padding: 0px;
-      background: #222;
-      border: 0px;
-      color: #33aaff;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.2s ease-in-out;
-    }
-    
-    .sidebar button:hover {
-    transform:scale(1.1)
-    }
-    
-    .main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    h1 {
-      margin-top: 0;
-      color: #33aaff;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #333;
-      vertical-align: top;
-    }
-    tr.active { background-color: #004477; }
-    tr.next { background-color: #222; color: #aaa; }
-    input[type="text"], input[type="number"], select {
-      width: 100%;
-      padding: 4px;
-      background: #000;
-      color: #ddd;
-      border: 1px solid #444;
-      border-radius: 3px;
-    }
-    .fadebar {
-      height: 4px;
-      background: #33aaff;
-      margin-top: 4px;
-      width: 0%;
-      transition: width linear;
-    }
-    #statusBar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #222;
-      color: #33aaff;
-      font-size: 14px;
-      padding: 10px;
-      border-top: 1px solid #444;
-      font-family: 'Segoe UI', sans-serif;
-    }
+/* -----------------------------------------------------------
+   ROOT VARIABLES — QLab + macOS Dark Hybrid
+----------------------------------------------------------- */
+
+:root {
+  --bg-main: #0f0f11;
+  --bg-elevated: rgba(25, 25, 28, 0.72);
+  --bg-sidebar: rgba(20, 20, 22, 0.72);
+
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  --text-main: #f5f5f7;
+  --text-muted: #9a9aa2;
+
+  --accent: #4cc2ff;
+  --accent-strong: #1ea0ff;
+
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 5px;
+
+  --shadow-soft: 0 8px 22px rgba(0,0,0,0.35);
+
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* -----------------------------------------------------------
+   GLOBAL
+----------------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* -----------------------------------------------------------
+   LAYOUT
+----------------------------------------------------------- */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* -----------------------------------------------------------
+   SIDEBAR
+----------------------------------------------------------- */
+
+.sidebar {
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(18px);
+  border-right: 1px solid var(--border-light);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.app-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 6px 0;
+}
+
+.sidebar-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sidebar-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* -----------------------------------------------------------
+   BUTTONS
+----------------------------------------------------------- */
+
+.btn {
+  border: 1px solid var(--border-light);
+  background: rgba(255,255,255,0.03);
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--border-strong);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+}
+
+.btn-subtle {
+  background: rgba(255,255,255,0.02);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,0.04);
+}
+
+/* -----------------------------------------------------------
+   MAIN AREA
+----------------------------------------------------------- */
+
+.main {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.main-title {
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-title-pill {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-light);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.main-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.main-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* -----------------------------------------------------------
+   FILE INPUT WRAPPER
+----------------------------------------------------------- */
+
+.file-input-wrapper {
+  position: relative;
+  border: 1px dashed var(--border-light);
+  padding: 7px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.03);
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.file-input-wrapper input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* -----------------------------------------------------------
+   CONTENT CARD
+----------------------------------------------------------- */
+
+.content-card {
+  background: var(--bg-elevated);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.content-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* -----------------------------------------------------------
+   TABLE
+----------------------------------------------------------- */
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.badge {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-light);
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+.table-wrapper {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow: auto;
+  background: rgba(255,255,255,0.02);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+}
+
+th, td {
+  padding: 7px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+tbody tr:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+tr.active {
+  background: rgba(76, 194, 255, 0.12);
+}
+
+tr.next {
+  background: rgba(61, 214, 140, 0.12);
+}
+
+/* -----------------------------------------------------------
+   INPUTS
+----------------------------------------------------------- */
+
+input[type="text"],
+input[type="number"],
+select {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* -----------------------------------------------------------
+   FADE BAR
+----------------------------------------------------------- */
+
+.fadebar {
+  height: 3px;
+  background: var(--accent);
+  width: 0%;
+  border-radius: 999px;
+  transition: width linear;
+}
+
+/* -----------------------------------------------------------
+   MODALS
+----------------------------------------------------------- */
+
+#savePopup,
+#loadPopup,
+#folderModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-elevated);
+  backdrop-filter: blur(20px);
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+  min-width: 280px;
+  max-width: 420px;
+  display: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* -----------------------------------------------------------
+   STATUS BAR
+----------------------------------------------------------- */
+
+#statusBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid var(--border-light);
+  padding: 8px 16px;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--accent);
+}
+
+/* -----------------------------------------------------------
+   ANIMATION REMOVAL — All Animate.css classes disabled
+----------------------------------------------------------- */
+
+.animate__animated,
+.animate__jackInTheBox,
+.animate__rollIn,
+.animate__backInUp,
+.animate__fadeIn,
+.animate__fadeInUp,
+.animate__fadeInDown,
+.animate__fadeInLeft,
+.animate__fadeInRight {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* -----------------------------------------------------------
+   RESPONSIVE
+----------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  .main {
+    padding: 10px;
+  }
+}
+
+
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="app-shell">
     <div class="sidebar">
-      <button class="animate__animated animate__jackInTheBox" onclick="goCue()"><img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/go.png" width="150" hieght="100"></button>
-      <button class="animate__animated animate__jackInTheBox" onclick="fadeCue()"><img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/fade.png" width="150" hieght="100"></button>
-      <button class="animate__animated animate__jackInTheBox" onclick="stopAll()"><img src="https://raw.githubusercontent.com/TheRealDuckers/WebCue/refs/heads/main/img/stop.png" width="150" hieght="100"></button>
-      
-      <button class="animate__animated animate__jackInTheBox" onclick="toggleFullscreen()">🧭 Fullscreen</button>
-      <button onclick="saveShow()">💾 Save Show</button>
-<button onclick="loadShow()">📂 Load Show</button>
+      <div class="sidebar-header">
+        <div class="app-title">WebCue Lab</div>
+        <div class="app-subtitle">v3.1 · Audio &amp; Lighting Cues</div>
+      </div>
 
+      <div class="sidebar-divider"></div>
 
+      <div>
+        <div class="sidebar-section-label">Playback</div>
+        <div class="sidebar-group">
+          <button class="btn btn-primary animate__animated animate__jackInTheBox" onclick="goCue()">
+            <span class="icon">▶</span>
+            <span>Go</span>
+          </button>
+          <button class="btn btn-ghost animate__animated animate__jackInTheBox" onclick="fadeCue()">
+            <span class="icon">〰</span>
+            <span>Fade</span>
+          </button>
+          <button class="btn btn-subtle animate__animated animate__jackInTheBox" onclick="stopAll()">
+            <span class="icon">■</span>
+            <span>Stop All</span>
+          </button>
+        </div>
+      </div>
 
+      <div>
+        <div class="sidebar-section-label">View</div>
+        <div class="sidebar-group">
+          <button class="btn btn-subtle animate__animated animate__jackInTheBox" onclick="toggleFullscreen()">
+            <span class="icon">🧭</span>
+            <span>Fullscreen</span>
+          </button>
+        </div>
+      </div>
 
+      <div>
+        <div class="sidebar-section-label">Shows</div>
+        <div class="sidebar-group">
+          <button class="btn btn-subtle" onclick="openSavePopup()">
+            <span class="icon">💾</span>
+            <span>Save Show</span>
+          </button>
+          <button class="btn btn-subtle" onclick="openLoadPopup()">
+            <span class="icon">📂</span>
+            <span>Load Show</span>
+          </button>
+        </div>
+      </div>
 
-
-
-
+      <div class="sidebar-footer">
+        <div>Show vault:</div>
+        <a href="shows">Open Show Vault (manager)</a>
+      </div>
     </div>
-   <div id="savePopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
-     background:#222; padding:20px; border:1px solid #555; z-index:1000; border-radius:10px; color:#fff;">
-  <h3 class="animate__animated animate__jackInTheBox">💾 Save Show</h3>
-  <input type="text" id="popupShowName" placeholder="Enter show name" style="width:100%; margin-bottom:10px;" />
-  <button class="animate__animated animate__jackInTheBox" onclick="confirmSavePopup()">✅ Save</button>
-  <button class="animate__animated animate__jackInTheBox" onclick="closeSavePopup()">❌ Cancel</button>
-</div>
-<div id="loadPopup" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
-     background:#222; padding:20px; border:1px solid #555; z-index:1001; border-radius:10px; color:#fff;">
-  <h3 class="animate__animated animate__jackInTheBox">📂 Load Saved Show</h3>
-  <select id="loadShowSelect" style="width:100%; margin-bottom:10px;">
-   
-  </select>
-  <button class="animate__animated animate__jackInTheBox" onclick="confirmLoadPopup()">✅ Load</button>
-  <button class="animate__animated animate__jackInTheBox" onclick="closeLoadPopup()">❌ Cancel</button>
-  <a href="shows">Go to Show Vault (manager)</a>
-  <p>Once a show is loaded, please re-upload any files used to make a show (it will auto match cues+files - just trust me on this one.)</p>
-</div>
-
 
     <div class="main">
-      <h1 class="animate__animated animate__jackInTheBox animate__rollIn"></h1>
-      <input type="file" multiple accept="audio/*" onchange="addCues(this.files)">
-      <!-- Folder Picker Trigger -->
-<button onclick="openFolderPicker()">📁 Load Cues from Folder</button>
+      <div class="main-header">
+        <div class="main-title-block">
+          <div class="main-title animate__animated animate__jackInTheBox animate__rollIn">
+            Cue List
+            <span class="main-title-pill">Live Deck</span>
+          </div>
+          <div class="main-subtitle">
+            Space = Go · ↑/↓ = Select · Swipe = Go/Fade
+          </div>
+        </div>
 
-<!-- File Selection Modal -->
-<div id="folderModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-  background:#222; padding:20px; border:1px solid #555; z-index:1002; border-radius:10px; color:#fff; max-height:60%; overflow-y:auto;">
-  <h3>Select Files to Include</h3>
-  <ul id="folderFileList" style="list-style:none; padding:0;"></ul>
-  <button onclick="confirmFolderSelection()">✅ Load Selected</button>
-  <button onclick="closeFolderModal()">❌ Cancel</button>
-</div>
+        <div class="main-actions">
+          <label class="file-input-wrapper">
+            <span class="icon">🎧</span>
+            <span>Import audio files</span>
+            <input type="file" multiple accept="audio/*" onchange="addCues(this.files)" />
+          </label>
 
-      <table id="cueTable">
-          <colgroup>
-    <col style="width: 60px" />
-    <col style="width: 200px" />
-    <col style="width: 300px" />
-    <col style="width: 120px" />
-    <col style="width: 80px" />
-    <col style="width: 100px" />
-  </colgroup>
-        <thead>
-          <tr>
-            <th>#</th><th>Name</th><th>Notes</th><th>Lighting Cue (QLC+)</th><th>Timer</th><th>Follow</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+          <button class="btn btn-subtle" onclick="openFolderPicker()">
+            <span class="icon">📁</span>
+            <span>Load from folder</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Save popup -->
+      <div id="savePopup">
+        <h3 class="animate__animated animate__jackInTheBox">
+          💾 Save Show
+        </h3>
+        <input type="text" id="popupShowName" placeholder="Enter show name" />
+        <div class="modal-actions">
+          <button class="btn btn-subtle" onclick="closeSavePopup()">✖ Cancel</button>
+          <button class="btn btn-primary" onclick="confirmSavePopup()">✔ Save</button>
+        </div>
+      </div>
+
+      <!-- Load popup -->
+      <div id="loadPopup">
+        <h3 class="animate__animated animate__jackInTheBox">
+          📂 Load Saved Show
+        </h3>
+        <select id="loadShowSelect"></select>
+        <p>
+          Once a show is loaded, please re-upload any files used to make it. WebCue will auto-match cues and files.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-subtle" onclick="closeLoadPopup()">✖ Cancel</button>
+          <button class="btn btn-primary" onclick="confirmLoadPopup()">✔ Load</button>
+        </div>
+      </div>
+
+      <!-- Folder modal -->
+      <div id="folderModal">
+        <h3>Select Files to Include</h3>
+        <ul id="folderFileList"></ul>
+        <div class="modal-actions">
+          <button class="btn btn-subtle" onclick="closeFolderModal()">✖ Cancel</button>
+          <button class="btn btn-primary" onclick="confirmFolderSelection()">✔ Load Selected</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-card-inner">
+          <div class="table-header-row">
+            <span>Cue stack</span>
+            <span class="badge">Audio · Notes · Lighting · Follow</span>
+          </div>
+
+          <div class="table-wrapper">
+            <table id="cueTable">
+              <colgroup>
+                <col style="width: 60px" />
+                <col style="width: 220px" />
+                <col style="width: 320px" />
+                <col style="width: 140px" />
+                <col style="width: 90px" />
+                <col style="width: 120px" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Notes</th>
+                  <th>Lighting Cue (QLC+)</th>
+                  <th>Timer</th>
+                  <th>Follow</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="animate__animated animate__backInUp" id="statusBar">Status: Ready</div>
 
+  <div class="animate__animated animate__backInUp" id="statusBar">
+    <span class="label">Status</span>
+    <span>Status: Ready</span>
+  </div>
 
-</body>
+  <!-- Your original script block, unchanged -->
   <script>
-let cues = [];
+    let cues = [];
     let currentCueIndex = 0;
     let audioCtx = null;
     let preset = null;
 
-
-function renderCues() {
+    function renderCues() {
       const tbody = document.querySelector('#cueTable tbody');
       tbody.innerHTML = '';
       cues.forEach((cue, i) => {
         const row = document.createElement('tr');
         if (i === currentCueIndex) row.classList.add('active');
         else if (i === currentCueIndex + 1) row.classList.add('next');
-
         row.innerHTML = `
           <td><input type="text" value="${cue.number}" onchange="updateCue(${i}, 'number', this.value)" /></td>
           <td><input type="text" value="${cue.name}" onchange="updateCue(${i}, 'name', this.value)" /></td>
@@ -206,175 +631,132 @@ function renderCues() {
       });
     }
 
-function saveShow() {
-    const showName = prompt("Enter show name:");
-    if (!showName) return;
-
-    const showData = cues.map(cue => ({
-      name: cue.name,
-      fileName: cue.fileName,
-      notes: cue.notes,
-      lightingFunctionId: cue.lightingFunctionId,
-      autoAdvance: cue.autoAdvance
-    }));
-
-    localStorage.setItem(`webcue-show-${showName}`, JSON.stringify(showData));
-    alert(`✅ Saved show "${showName}"`);
-  }
-
-  async function loadShow() {
-    const showName = prompt("Enter show name to load:");
-    const showDataRaw = localStorage.getItem(`webcue-show-${showName}`);
-    if (!showDataRaw) {
-      alert(`❌ No saved show named "${showName}"`);
-      return;
+    function saveShow() {
+      const showName = prompt("Enter show name:");
+      if (!showName) return;
+      const showData = cues.map(cue => ({
+        name: cue.name,
+        fileName: cue.fileName,
+        notes: cue.notes,
+        lightingFunctionId: cue.lightingFunctionId,
+        autoAdvance: cue.autoAdvance
+      }));
+      localStorage.setItem(`webcue-show-${showName}`, JSON.stringify(showData));
+      alert(`✅ Saved show "${showName}"`);
     }
 
-    const showData = JSON.parse(showDataRaw);
-    const dirHandle = await window.showDirectoryPicker();
-
-    const audioFiles = [];
-    for await (const [name, handle] of dirHandle.entries()) {
-      if (handle.kind === 'file' && name.match(/\.(mp3|wav|ogg)$/i)) {
-        const file = await handle.getFile();
-        audioFiles.push({ name, file });
+    async function loadShow() {
+      const showName = prompt("Enter show name to load:");
+      const showDataRaw = localStorage.getItem(`webcue-show-${showName}`);
+      if (!showDataRaw) {
+        alert(`❌ No saved show named "${showName}"`);
+        return;
       }
+      const showData = JSON.parse(showDataRaw);
+      const dirHandle = await window.showDirectoryPicker();
+      const audioFiles = [];
+      for await (const [name, handle] of dirHandle.entries()) {
+        if (handle.kind === 'file' && name.match(/\.(mp3|wav|ogg)$/i)) {
+          const file = await handle.getFile();
+          audioFiles.push({ name, file });
+        }
+      }
+      cues = [];
+      for (const cueData of showData) {
+        const match = audioFiles.find(f => f.name === cueData.fileName);
+        if (!match) {
+          console.warn(`⚠️ File not found: ${cueData.fileName}`);
+          continue;
+        }
+        const url = URL.createObjectURL(match.file);
+        const audio = new Audio(url);
+        audio.crossOrigin = 'anonymous';
+        const id = 'cue-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+        cues.push({
+          id,
+          audio,
+          file: match.file,
+          number: cues.length + 1,
+          name: cueData.name,
+          notes: cueData.notes,
+          lightingFunctionId: cueData.lightingFunctionId,
+          elapsed: 0,
+          autoAdvance: cueData.autoAdvance,
+          fileName: cueData.fileName
+        });
+        audio.addEventListener('ended', () => {
+          if (cues[currentCueIndex].autoAdvance === "Auto") {
+            goCue();
+          } else {
+            renderCues();
+          }
+        });
+      }
+      renderCues();
+      alert(`📂 Loaded ${cues.length} cue${cues.length !== 1 ? 's' : ''} from "${showName}"`);
     }
 
-    cues = [];
-    for (const cueData of showData) {
-      const match = audioFiles.find(f => f.name === cueData.fileName);
-      if (!match) {
-        console.warn(`⚠️ File not found: ${cueData.fileName}`);
-        continue;
+    function addCues(files) {
+      if (cues.length > 0 && cues[0].audio.src === "") {
+        matchAudioFiles(files);
+        console.log("🔍 matchAudioFiles called with", files.length, "files");
+        return;
       }
-
-      const url = URL.createObjectURL(match.file);
-      const audio = new Audio(url);
-      audio.crossOrigin = 'anonymous';
-
-      const id = 'cue-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-      cues.push({
-        id,
-        audio,
-        file: match.file,
-        number: cues.length + 1,
-        name: cueData.name,
-        notes: cueData.notes,
-        lightingFunctionId: cueData.lightingFunctionId,
-        elapsed: 0,
-        autoAdvance: cueData.autoAdvance,
-        fileName: cueData.fileName
+      Array.from(files).forEach((file, i) => {
+        const id = 'cue-' + Date.now() + '-' + i;
+        const url = URL.createObjectURL(file);
+        const audio = new Audio(url);
+        audio.crossOrigin = 'anonymous';
+        cues.push({
+          id,
+          audio,
+          file,
+          number: cues.length + 1,
+          name: file.name.replace(/\.[^/.]+$/, ""),
+          notes: "",
+          lightingFunctionId: null,
+          elapsed: 0,
+          autoAdvance: "Manual",
+          fileName: file.name
+        });
+        audio.addEventListener('ended', () => {
+          if (cues[currentCueIndex].autoAdvance === "Auto") {
+            goCue();
+          } else {
+            renderCues();
+          }
+        });
       });
+      renderCues();
+    }
 
-      audio.addEventListener('ended', () => {
-        if (cues[currentCueIndex].autoAdvance === "Auto") {
-          goCue();
+    function matchAudioFiles(files) {
+      let matched = 0;
+      Array.from(files).forEach(file => {
+        const name = file.name.trim().toLowerCase();
+        const cue = cues.find(c => c.fileName && c.fileName.trim().toLowerCase() === name);
+        if (cue) {
+          const url = URL.createObjectURL(file);
+          const audio = new Audio(url);
+          audio.crossOrigin = 'anonymous';
+          cue.audio = audio;
+          cue.file = file;
+          matched++;
+          console.log(`✅ Matched: ${name}`);
         } else {
-          renderCues();
+          console.warn(`❌ No match for: ${name}`);
         }
       });
+      renderCues();
+      updateAudioSyncPanel?.();
+      showStatusMessage(`🎧 Matched ${matched} file${matched !== 1 ? 's' : ''}`);
     }
 
-    renderCues();
-    alert(`📂 Loaded ${cues.length} cue${cues.length !== 1 ? 's' : ''} from "${showName}"`);
-  }
-
-function addCues(files) {
-
-  if (cues.length > 0 && cues[0].audio.src === "") {
-    matchAudioFiles(files); // <-- your matching function
-    console.log("🔍 matchAudioFiles called with", files.length, "files");
-    return;
-  }
-
- 
-  Array.from(files).forEach((file, i) => {
-    const id = 'cue-' + Date.now() + '-' + i;
-    const url = URL.createObjectURL(file);
-    const audio = new Audio(url);
-    audio.crossOrigin = 'anonymous';
-
-    cues.push({
-      id,
-      audio,
-      file,
-      number: cues.length + 1,
-      name: file.name.replace(/\.[^/.]+$/, ""),
-      notes: "",
-      lightingFunctionId: null,
-      elapsed: 0,
-      autoAdvance: "Manual",
-      fileName: file.name
-    });
-
-    audio.addEventListener('ended', () => {
-      if (cues[currentCueIndex].autoAdvance === "Auto") {
-        goCue();
-      } else {
-        renderCues();
-      }
-    });
-  });
-
-  renderCues();
-}
-
-function matchAudioFiles(files) {
-  let matched = 0;
-
-  Array.from(files).forEach(file => {
-    const name = file.name.trim().toLowerCase();
-    const cue = cues.find(c => c.fileName && c.fileName.trim().toLowerCase() === name);
-
-    if (cue) {
-      const url = URL.createObjectURL(file);
-      const audio = new Audio(url);
-      audio.crossOrigin = 'anonymous';
-      cue.audio = audio;
-      cue.file = file;
-      matched++;
-      console.log(`✅ Matched: ${name}`);
-    } else {
-      console.warn(`❌ No match for: ${name}`);
-    }
-  });
-
-  renderCues();
-  updateAudioSyncPanel?.();
-  showStatusMessage(`🎧 Matched ${matched} file${matched !== 1 ? 's' : ''}`);
-}
-
-function renderCues() {
-      const tbody = document.querySelector('#cueTable tbody');
-      tbody.innerHTML = '';
-      cues.forEach((cue, i) => {
-        const row = document.createElement('tr');
-        if (i === currentCueIndex) row.classList.add('active');
-        else if (i === currentCueIndex + 1) row.classList.add('next');
-
-        row.innerHTML = `
-          <td><input type="text" value="${cue.number}" onchange="updateCue(${i}, 'number', this.value)" /></td>
-          <td><input type="text" value="${cue.name}" onchange="updateCue(${i}, 'name', this.value)" /></td>
-          <td><input type="text" value="${cue.notes}" onchange="updateCue(${i}, 'notes', this.value)" /></td>
-          <td><input type="number" value="${cue.lightingFunctionId || ''}" onchange="updateCue(${i}, 'lightingFunctionId', parseInt(this.value) || null)" /></td>
-          <td id="timer-${cue.id}">0:00</td>
-          <td>
-            <select onchange="updateCue(${i}, 'autoAdvance', this.value)">
-              <option ${cue.autoAdvance === "Manual" ? "selected" : ""}>Manual</option>
-              <option ${cue.autoAdvance === "Auto" ? "selected" : ""}>Auto</option>
-            </select>
-            <div class="fadebar" id="fade-${cue.id}"></div>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-function updateCue(index, field, value) {
+    function updateCue(index, field, value) {
       cues[index][field] = value;
     }
 
-function goCue() {
+    function goCue() {
       const cue = cues[currentCueIndex];
       if (!cue) return;
       if (!audioCtx) audioCtx = new AudioContext();
@@ -393,39 +775,32 @@ function goCue() {
       renderCues();
     }
 
-function fadeCue() {
-  const cue = cues[currentCueIndex];
-  if (!cue) return;
-
-  const fadeBar = document.getElementById(`fade-${cue.id}`);
-  fadeBar.style.transition = 'width 2s linear';
-  fadeBar.style.width = '100%';
-
-  if (!audioCtx) audioCtx = new AudioContext();
-
-  // Hook up gain if not already connected
-  if (!cue.filters?.gainNode) {
-    const source = audioCtx.createMediaElementSource(cue.audio);
-    const gain = audioCtx.createGain();
-    source.connect(gain);
-    gain.connect(audioCtx.destination);
-    cue.filters = { gainNode: gain };
-  }
-
-  // Perform audio fade over 2 seconds
-  const now = audioCtx.currentTime;
-  cue.filters.gainNode.gain.cancelScheduledValues(now);
-  cue.filters.gainNode.gain.setValueAtTime(1, now);
-  cue.filters.gainNode.gain.linearRampToValueAtTime(0, now + 2);
-
-  setTimeout(() => {
-    cue.audio.pause();
-    cue.audio.currentTime = 0;
-    fadeBar.style.transition = 'none';
-    fadeBar.style.width = '0%';
-    renderCues();
-  }, 2000);
-}
+    function fadeCue() {
+      const cue = cues[currentCueIndex];
+      if (!cue) return;
+      const fadeBar = document.getElementById(`fade-${cue.id}`);
+      fadeBar.style.transition = 'width 2s linear';
+      fadeBar.style.width = '100%';
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (!cue.filters?.gainNode) {
+        const source = audioCtx.createMediaElementSource(cue.audio);
+        const gain = audioCtx.createGain();
+        source.connect(gain);
+        gain.connect(audioCtx.destination);
+        cue.filters = { gainNode: gain };
+      }
+      const now = audioCtx.currentTime;
+      cue.filters.gainNode.gain.cancelScheduledValues(now);
+      cue.filters.gainNode.gain.setValueAtTime(1, now);
+      cue.filters.gainNode.gain.linearRampToValueAtTime(0, now + 2);
+      setTimeout(() => {
+        cue.audio.pause();
+        cue.audio.currentTime = 0;
+        fadeBar.style.transition = 'none';
+        fadeBar.style.width = '0%';
+        renderCues();
+      }, 2000);
+    }
 
     function stopAll() {
       cues.forEach(cue => {
@@ -443,8 +818,6 @@ function fadeCue() {
       const cue = cues[currentCueIndex];
       const next = cues[currentCueIndex + 1];
       const statusParts = [];
-    
-
       if (cue) {
         const name = cue.name || 'Unnamed Cue';
         const time = cue.audio?.currentTime || 0;
@@ -455,16 +828,14 @@ function fadeCue() {
           statusParts.push(`💡 Lighting Cue: Function ${cue.lightingFunctionId}`);
         }
       }
-
       if (next) {
         const nextName = next.name || 'Unnamed';
         statusParts.push(`Next: ${nextName}`);
       }
-
-      bar.textContent = statusParts.join(' — ');
+      bar.lastElementChild.textContent = statusParts.join(' — ') || 'Status: Ready';
     }
 
-        setInterval(() => {
+    setInterval(() => {
       cues.forEach(cue => {
         if (!cue.audio.paused) {
           cue.elapsed = Math.floor(cue.audio.currentTime);
@@ -478,289 +849,271 @@ function fadeCue() {
       });
       updateStatusBar();
     }, 500);
-    
-document.addEventListener('keydown', e => {
-  // Skip global shortcuts if focus is on input or textarea
-  const active = document.activeElement;
-  const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
-  if (isTyping) return;
 
-  // Spacebar GO
-  if (e.code === 'Space') {
-    e.preventDefault();
-    goCue();
-    renderCues();
-  }
-
-  // Arrows for cue selection
-  if (e.code === 'ArrowUp') {
-    e.preventDefault();
-    currentCueIndex = Math.max(currentCueIndex - 1, 0);
-    renderCues();
-  }
-
-  if (e.code === 'ArrowDown') {
-    e.preventDefault();
-    currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
-    renderCues();
-  }
-});
-
-function showStatusMessage(message, duration = 3000) {
-  const bar = document.getElementById("statusBar");
-  bar.textContent = `${message}`;
-  setTimeout(() => {
-    bar.textContent = "Status: Ready"; // or whatever your default is
-  }, duration);
-}
-document.querySelectorAll('#cueTable th').forEach((th, i) => {
-  th.style.position = 'relative';
-  const grip = document.createElement('div');
-  grip.style.width = '5px';
-  grip.style.height = '100%';
-  grip.style.position = 'absolute';
-  grip.style.top = '0';
-  grip.style.right = '0';
-  grip.style.cursor = 'col-resize';
-  grip.addEventListener('mousedown', initDrag);
-  th.appendChild(grip);
-
-   function initDrag(e) {
-    e.preventDefault();
-    document.onmousemove = (ev) => {
-      const newWidth = ev.clientX - th.getBoundingClientRect().left;
-      document.querySelector(`#cueTable col:nth-child(${i + 1})`).style.width = newWidth + 'px';
-    };
-    document.onmouseup = () => {
-      document.onmousemove = null;
-      document.onmouseup = null;
-    };
-  }
-});
-
-function openSavePopup() {
-  document.getElementById('savePopup').style.display = 'block';
-}
-
-function closeSavePopup() {
-  document.getElementById('savePopup').style.display = 'none';
-}
-
-function confirmSavePopup() {
-  const name = document.getElementById('popupShowName').value.trim();
-  if (!name) return alert("⚠️ Enter a show name!");
-  const data = JSON.stringify(cues.map(cue => ({
-    number: cue.number,
-    name: cue.name,
-    notes: cue.notes,
-    lightingFunctionId: cue.lightingFunctionId,
-    autoAdvance: cue.autoAdvance,
-    fileName: cue.file?.name
-  })));
-  localStorage.setItem(`cueShow_v3_${name}`, data);
-  closeSavePopup();
-  refreshShowDropdown();
-  alert(`✅ Show "${name}" saved!`);
-}
-
-function openLoadPopup() {
-  const select = document.getElementById("loadShowSelect");
-  select.innerHTML = "";
-  Object.keys(localStorage)
-    .filter(k => k.startsWith("cueShow_v3_"))
-    .forEach(k => {
-      const opt = document.createElement("option");
-      opt.value = k.replace("cueShow_v3_", "");
-      opt.textContent = opt.value;
-      select.appendChild(opt);
-    });
-  document.getElementById("loadPopup").style.display = "block";
-}
-
-function closeLoadPopup() {
-  document.getElementById("loadPopup").style.display = "none";
-}
-
-function confirmLoadPopup() {
-  const name = document.getElementById("loadShowSelect").value;
-  const raw = localStorage.getItem(`cueShow_v3_${name}`);
-  if (!raw) return alert("❌ Show not found.");
-  const data = JSON.parse(raw);
-
-  cues = data.map((cue, i) => ({
-    id: 'cue-' + Date.now() + '-' + i,
-    audio: new Audio(), // user must reimport manually
-    file: null,
-    elapsed: 0,
-    ...cue
-  }));
-
-  currentCueIndex = 0;
-  renderCues();
-  closeLoadPopup();
-  alert(`✅ Show "${name}" loaded!`);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  const name = sessionStorage.getItem("loadShowName");
-  if (name) {
-    sessionStorage.removeItem("loadShowName");
-    confirmLoadFromVault(name);
-  }
-});
-
-function confirmLoadFromVault(name) {
-  const raw = localStorage.getItem(`cueShow_v3_${name}`);
-  if (!raw) return showStatusMessage("❌ Show not found.");
-  const data = JSON.parse(raw);
-  cues = data.map((cue, i) => ({
-    id: 'cue-' + Date.now() + '-' + i,
-    audio: new Audio(),
-    file: null,
-    elapsed: 0,
-    ...cue
-  }));
-  currentCueIndex = 0;
-  renderCues();
-  showStatusMessage(`✅ Loaded show "${name}"`);
-}
-
-function toggleFullscreen() {
-  const elem = document.documentElement; // or any container element
-
-  if (!document.fullscreenElement) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { // Safari
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { // IE
-      elem.msRequestFullscreen();
-    }
-    showStatusMessage("🔎 Entering fullscreen...");
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
-    showStatusMessage("🔙 Exiting fullscreen.");
-  }
-}
-function testMsg(){
- showStatusMessage("Status Bar Test Sucsess!")
-}
-function admin(){
- showStatusMessage("Hello, You found the secret function!")
-}
-
-let touchStartX = null;
-
-document.addEventListener("touchstart", e => {
-  const touch = e.changedTouches[0];
-  touchStartX = touch.screenX;
-});
-
-document.addEventListener("touchend", e => {
-  if (touchStartX === null) return;
-
-  const touchEndX = e.changedTouches[0].screenX;
-  const diff = touchEndX - touchStartX;
-
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) {
-      goCue();
-      showStatusMessage("➡️ Swipe GO triggered");
-    } else {
-      fadeCue?.(); // or stopAll();
-      showStatusMessage("⬅️ Swipe FADE triggered");
-    }
-  }
-
-  touchStartX = null;
-});
-
-let folderFiles = [];
-let selectedOrder = [];
-
-async function openFolderPicker() {
-  const dirHandle = await window.showDirectoryPicker();
-  folderFiles = [];
-  selectedOrder = [];
-
-  for await (const [name, handle] of dirHandle.entries()) {
-    if (handle.kind === 'file' && name.match(/\.(mp3|wav|ogg)$/i)) {
-      folderFiles.push({ name, handle });
-    }
-  }
-
-  const list = document.getElementById('folderFileList');
-  list.innerHTML = '';
-  folderFiles.forEach(({ name }) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <label>
-        <input type="checkbox" value="${name}" onchange="trackFolderSelection(this)" />
-        ${name}
-      </label>
-    `;
-    list.appendChild(li);
-  });
-
-  document.getElementById('folderModal').style.display = 'block';
-}
-
-function trackFolderSelection(checkbox) {
-  const filename = checkbox.value;
-  if (checkbox.checked) {
-    selectedOrder.push(filename);
-  } else {
-    selectedOrder = selectedOrder.filter(f => f !== filename);
-  }
-}
-
-function closeFolderModal() {
-  document.getElementById('folderModal').style.display = 'none';
-}
-
-async function confirmFolderSelection() {
-  document.getElementById('folderModal').style.display = 'none';
-
-  for (const filename of selectedOrder) {
-    const fileHandle = folderFiles.find(f => f.name === filename).handle;
-    const file = await fileHandle.getFile();
-    const url = URL.createObjectURL(file);
-    const audio = new Audio(url);
-    audio.crossOrigin = 'anonymous';
-
-    const id = 'cue-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-    cues.push({
-      id,
-      audio,
-      file,
-      number: cues.length + 1,
-      name: file.name.replace(/\.[^/.]+$/, ""),
-      notes: "",
-      lightingFunctionId: null,
-      elapsed: 0,
-      autoAdvance: "Manual",
-      fileName: file.name
-    });
-
-    audio.addEventListener('ended', () => {
-      if (cues[currentCueIndex].autoAdvance === "Auto") {
+    document.addEventListener('keydown', e => {
+      const active = document.activeElement;
+      const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+      if (isTyping) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
         goCue();
-      } else {
+        renderCues();
+      }
+      if (e.code === 'ArrowUp') {
+        e.preventDefault();
+        currentCueIndex = Math.max(currentCueIndex - 1, 0);
+        renderCues();
+      }
+      if (e.code === 'ArrowDown') {
+        e.preventDefault();
+        currentCueIndex = Math.min(currentCueIndex + 1, cues.length - 1);
         renderCues();
       }
     });
-  }
 
-  renderCues();
-  showStatusMessage(`✅ Loaded ${selectedOrder.length} cue${selectedOrder.length !== 1 ? 's' : ''} from folder`);
-}
+    function showStatusMessage(message, duration = 3000) {
+      const bar = document.getElementById("statusBar");
+      bar.lastElementChild.textContent = `${message}`;
+      setTimeout(() => {
+        bar.lastElementChild.textContent = "Status: Ready";
+      }, duration);
+    }
 
+    document.querySelectorAll('#cueTable th').forEach((th, i) => {
+      th.style.position = 'relative';
+      const grip = document.createElement('div');
+      grip.style.width = '5px';
+      grip.style.height = '100%';
+      grip.style.position = 'absolute';
+      grip.style.top = '0';
+      grip.style.right = '0';
+      grip.style.cursor = 'col-resize';
+      grip.addEventListener('mousedown', initDrag);
+      th.appendChild(grip);
+      function initDrag(e) {
+        e.preventDefault();
+        document.onmousemove = (ev) => {
+          const newWidth = ev.clientX - th.getBoundingClientRect().left;
+          document.querySelector(`#cueTable col:nth-child(${i + 1})`).style.width = newWidth + 'px';
+        };
+        document.onmouseup = () => {
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+      }
+    });
 
-    </script>
+    function openSavePopup() {
+      document.getElementById('savePopup').style.display = 'block';
+    }
+
+    function closeSavePopup() {
+      document.getElementById('savePopup').style.display = 'none';
+    }
+
+    function confirmSavePopup() {
+      const name = document.getElementById('popupShowName').value.trim();
+      if (!name) return alert("⚠️ Enter a show name!");
+      const data = JSON.stringify(
+        cues.map(cue => ({
+          number: cue.number,
+          name: cue.name,
+          notes: cue.notes,
+          lightingFunctionId: cue.lightingFunctionId,
+          autoAdvance: cue.autoAdvance,
+          fileName: cue.file?.name
+        }))
+      );
+      localStorage.setItem(`cueShow_v3_${name}`, data);
+      closeSavePopup();
+      alert(`✅ Show "${name}" saved!`);
+    }
+
+    function openLoadPopup() {
+      const select = document.getElementById("loadShowSelect");
+      select.innerHTML = "";
+      Object.keys(localStorage)
+        .filter(k => k.startsWith("cueShow_v3_"))
+        .forEach(k => {
+          const opt = document.createElement("option");
+          opt.value = k.replace("cueShow_v3_", "");
+          opt.textContent = opt.value;
+          select.appendChild(opt);
+        });
+      document.getElementById("loadPopup").style.display = "block";
+    }
+
+    function closeLoadPopup() {
+      document.getElementById("loadPopup").style.display = "none";
+    }
+
+    function confirmLoadPopup() {
+      const name = document.getElementById("loadShowSelect").value;
+      const raw = localStorage.getItem(`cueShow_v3_${name}`);
+      if (!raw) return alert("❌ Show not found.");
+      const data = JSON.parse(raw);
+      cues = data.map((cue, i) => ({
+        id: 'cue-' + Date.now() + '-' + i,
+        audio: new Audio(),
+        file: null,
+        elapsed: 0,
+        ...cue
+      }));
+      currentCueIndex = 0;
+      renderCues();
+      closeLoadPopup();
+      alert(`✅ Show "${name}" loaded!`);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = sessionStorage.getItem("loadShowName");
+      if (name) {
+        sessionStorage.removeItem("loadShowName");
+        confirmLoadFromVault(name);
+      }
+    });
+
+    function confirmLoadFromVault(name) {
+      const raw = localStorage.getItem(`cueShow_v3_${name}`);
+      if (!raw) return showStatusMessage("❌ Show not found.");
+      const data = JSON.parse(raw);
+      cues = data.map((cue, i) => ({
+        id: 'cue-' + Date.now() + '-' + i,
+        audio: new Audio(),
+        file: null,
+        elapsed: 0,
+        ...cue
+      }));
+      currentCueIndex = 0;
+      renderCues();
+      showStatusMessage(`✅ Loaded show "${name}"`);
+    }
+
+    function toggleFullscreen() {
+      const elem = document.documentElement;
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+        showStatusMessage("🔎 Entering fullscreen...");
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+        showStatusMessage("🔙 Exiting fullscreen.");
+      }
+    }
+
+    function testMsg() {
+      showStatusMessage("Status Bar Test Success!");
+    }
+
+    function admin() {
+      showStatusMessage("Hello, You found the secret function!");
+    }
+
+    let touchStartX = null;
+    document.addEventListener("touchstart", e => {
+      const touch = e.changedTouches[0];
+      touchStartX = touch.screenX;
+    });
+
+    document.addEventListener("touchend", e => {
+      if (touchStartX === null) return;
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          goCue();
+          showStatusMessage("➡️ Swipe GO triggered");
+        } else {
+          fadeCue?.();
+          showStatusMessage("⬅️ Swipe FADE triggered");
+        }
+      }
+      touchStartX = null;
+    });
+
+    let folderFiles = [];
+    let selectedOrder = [];
+
+    async function openFolderPicker() {
+      const dirHandle = await window.showDirectoryPicker();
+      folderFiles = [];
+      selectedOrder = [];
+      for await (const [name, handle] of dirHandle.entries()) {
+        if (handle.kind === 'file' && name.match(/\.(mp3|wav|ogg)$/i)) {
+          folderFiles.push({ name, handle });
+        }
+      }
+      const list = document.getElementById('folderFileList');
+      list.innerHTML = '';
+      folderFiles.forEach(({ name }) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <label>
+            <input type="checkbox" value="${name}" onchange="trackFolderSelection(this)" />
+            ${name}
+          </label>
+        `;
+        list.appendChild(li);
+      });
+      document.getElementById('folderModal').style.display = 'block';
+    }
+
+    function trackFolderSelection(checkbox) {
+      const filename = checkbox.value;
+      if (checkbox.checked) {
+        selectedOrder.push(filename);
+      } else {
+        selectedOrder = selectedOrder.filter(f => f !== filename);
+      }
+    }
+
+    function closeFolderModal() {
+      document.getElementById('folderModal').style.display = 'none';
+    }
+
+    async function confirmFolderSelection() {
+      document.getElementById('folderModal').style.display = 'none';
+      for (const filename of selectedOrder) {
+        const fileHandle = folderFiles.find(f => f.name === filename).handle;
+        const file = await fileHandle.getFile();
+        const url = URL.createObjectURL(file);
+        const audio = new Audio(url);
+        audio.crossOrigin = 'anonymous';
+        const id = 'cue-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+        cues.push({
+          id,
+          audio,
+          file,
+          number: cues.length + 1,
+          name: file.name.replace(/\.[^/.]+$/, ""),
+          notes: "",
+          lightingFunctionId: null,
+          elapsed: 0,
+          autoAdvance: "Manual",
+          fileName: file.name
+        });
+        audio.addEventListener('ended', () => {
+          if (cues[currentCueIndex].autoAdvance === "Auto") {
+            goCue();
+          } else {
+            renderCues();
+          }
+        });
+      }
+      renderCues();
+      showStatusMessage(`✅ Loaded ${selectedOrder.length} cue${selectedOrder.length !== 1 ? 's' : ''} from folder`);
+    }
+  </script>
+</body>
 </html>
