@@ -1,214 +1,1409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WebCue | Browser Check</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      text-align: center;
-      padding: 50px;
-    }
-    .container {
-      background-color: #1e1e1e;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00ffe0;
-      display: inline-block;
-      max-width: 400px;
-    }
-    img {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 15px;
-      filter: drop-shadow(0 0 5px #00ffe0);
-    }
-    h2 {
-      margin-bottom: 20px;
-    }
-    button, select {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .yes {
-      background-color: #00c853;
-      color: white;
-      box-shadow: 0 0 10px #00c853;
-    }
-    .no {
-      background-color: #d50000;
-      color: white;
-      box-shadow: 0 0 10px #d50000;
-    }
-    #mobile-warning {
-      margin-top: 20px;
-      color: #ff9800;
-      font-weight: bold;
-      display: none;
-    }
-    #manual-select {
-      margin-top: 20px;
-      display: none;
-    }
-    #manual-select select {
-      background-color: #2c2c2c;
-      color: #e0e0e0;
-      box-shadow: 0 0 10px #00ffe0;
-    }
-    #manual-select button {
-      background-color: #2196f3;
-      color: white;
-      box-shadow: 0 0 10px #2196f3;
-    }
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.8);
-    }
-    .modal-content {
-      background-color: #1e1e1e;
-      margin: 15% auto;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #ff4081;
-      width: 80%;
-      max-width: 400px;
-      color: #e0e0e0;
-      text-align: center;
-    }
-    .modal-content a {
-      color: #00bcd4;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .modal-content button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #ff4081;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      box-shadow: 0 0 10px #ff4081;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCue - Show Control</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d0d0d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --surface-hover: #222222;
+            --border: #333333;
+            --primary: #00d4aa;
+            --primary-dim: #00a88a;
+            --stop: #ff6b35;
+            --pause: #ffbe0b;
+            --panic: #ff006e;
+            --text: #e8e8e8;
+            --text-dim: #666666;
+            --selected: rgba(0, 212, 170, 0.15);
+            --running: rgba(0, 212, 170, 0.25);
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--surface);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .show-title { display: flex; align-items: center; gap: 12px; }
+
+        .show-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .show-title input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .show-title input:hover, .show-title input:focus { background: var(--surface-hover); }
+
+        .transport { display: flex; gap: 8px; }
+
+        .transport button {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-go { background: var(--primary); color: #000; }
+        .btn-go:hover { background: var(--primary-dim); }
+        .btn-stop { background: var(--stop); color: #fff; }
+        .btn-panic { background: var(--panic); color: #fff; padding: 10px 14px; }
+        .btn-load { background: var(--pause); color: #000; }
+
+        .header-actions { display: flex; gap: 8px; }
+
+        .header-actions button {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 11px;
+            text-transform: uppercase;
+            transition: all 0.15s ease;
+        }
+
+        .header-actions button:hover { background: var(--border); color: var(--text); }
+
+        main { flex: 1; display: flex; overflow: hidden; }
+
+        .cue-list-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            min-width: 0;
+        }
+
+        .cue-list-header {
+            padding: 12px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cue-list-header h2 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+        }
+
+        .cue-list-actions { display: flex; gap: 4px; }
+
+        .cue-list-actions button {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.15s ease;
+        }
+
+        .cue-list-actions button:hover { background: var(--surface-hover); color: var(--text); }
+
+        .cue-list { flex: 1; overflow-y: auto; padding: 8px; }
+
+        .cue-list::-webkit-scrollbar { width: 8px; }
+        .cue-list::-webkit-scrollbar-track { background: var(--bg); }
+        .cue-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .cue-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            background: var(--surface);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+            border-left: 3px solid transparent;
+        }
+
+        .cue-item:hover { background: var(--surface-hover); }
+        .cue-item.selected { background: var(--selected); border-color: var(--primary); }
+        .cue-item.running { background: var(--running); border-left-color: var(--primary); animation: pulse 1s ease-in-out infinite; }
+        .cue-item.next-cue { border-left-color: var(--pause); }
+        .cue-item.loaded { border-left-color: var(--primary-dim); }
+
+        @keyframes pulse {
+            0%, 100% { border-left-color: var(--primary); }
+            50% { border-left-color: var(--primary-dim); }
+        }
+
+        .cue-number { font-size: 11px; color: var(--text-dim); width: 32px; text-align: center; }
+        .cue-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: var(--bg); border-radius: 4px; margin-right: 12px; font-size: 14px; }
+        .cue-name { flex: 1; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cue-duration { font-size: 11px; color: var(--text-dim); margin-left: 12px; }
+        .cue-load-status { font-size: 10px; color: var(--primary); margin-left: 8px; }
+
+        .cue-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-dim);
+            font-size: 14px;
+            gap: 16px;
+        }
+
+        .cue-empty-icon { font-size: 48px; opacity: 0.3; }
+
+        .editor-panel { width: 360px; background: var(--surface); display: flex; flex-direction: column; overflow: hidden; }
+
+        .editor-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+        .editor-header h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+
+        .editor-content { flex: 1; overflow-y: auto; padding: 16px; }
+
+        .editor-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-dim);
+            text-align: center;
+        }
+
+        .form-group { margin-bottom: 16px; }
+
+        .form-group label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+
+        .form-row { display: flex; gap: 12px; }
+        .form-row .form-group { flex: 1; }
+
+        .file-input-wrapper { position: relative; }
+
+        .file-input-wrapper input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+        .file-input-display {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-dim);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-input-wrapper:hover .file-input-display { border-color: var(--primary); }
+
+        .color-picker-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .color-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .color-swatch:hover, .color-swatch.selected { border-color: #fff; transform: scale(1.1); }
+
+        .editor-footer { padding: 16px; border-top: 1px solid var(--border); }
+
+        .btn-delete {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--panic);
+            color: var(--panic);
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-delete:hover { background: var(--panic); color: #fff; }
+
+        footer { background: var(--surface); padding: 8px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-dim); }
+
+        .status-cue { display: flex; align-items: center; gap: 8px; }
+
+        .status-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); }
+        .status-indicator.active { background: var(--primary); animation: pulse 1s ease-in-out infinite; }
+        .status-indicator.loaded { background: var(--primary-dim); }
+
+        .status-time { font-variant-numeric: tabular-nums; }
+
+        .status-load { display: flex; align-items: center; gap: 6px; }
+
+        kbd { background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: 2px 5px; font-size: 10px; color: var(--text-dim); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--border);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 { font-size: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        .modal-close { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; }
+
+        .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+        .modal-actions button { font-family: inherit; font-size: 12px; padding: 8px 16px; border-radius: 4px; cursor: pointer; border: none; }
+        .modal-actions .btn-cancel { background: var(--surface-hover); color: var(--text); }
+        .modal-actions .btn-confirm { background: var(--primary); color: #000; }
+
+        .toast {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .cue-item.dragging { opacity: 0.5; }
+        .cue-item.drag-over { border-top: 2px solid var(--primary); }
+
+        .settings-section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .settings-section:last-child { border-bottom: none; }
+        .settings-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 12px; }
+
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+        .setting-row label { font-size: 13px; }
+        .setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
+        .setting-row input[type="text"], .setting-row input[type="number"] { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 4px; font-family: inherit; font-size: 13px; width: 120px; }
+
+        .qlc-status { display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 8px; background: var(--bg); border-radius: 4px; margin-bottom: 12px; }
+        .qlc-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); }
+        .qlc-status-dot.connected { background: var(--primary); }
+
+        .qlc-test-btn { background: var(--surface-hover); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 11px; margin-top: 8px; }
+        .qlc-test-btn:hover { background: var(--border); }
+
+        .load-progress { margin-top: 16px; }
+        .load-progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+        .load-progress-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
+        .load-status-text { font-size: 11px; color: var(--text-dim); margin-top: 8px; }
+
+        .show-mode-active { border: 2px solid var(--primary); }
+        .show-mode-active header { border-bottom-color: var(--primary); }
+
+        .fullscreen-mode {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: var(--bg);
+            padding: 20px;
+        }
+
+        .fullscreen-mode header { display: none; }
+        .fullscreen-mode .editor-panel { display: none; }
+        .fullscreen-mode .cue-list-container { border: none; }
+        .fullscreen-mode .cue-list { padding: 20px; }
+        .fullscreen-mode .cue-item { padding: 16px; margin-bottom: 8px; }
+        .fullscreen-mode .cue-item .cue-name { font-size: 18px; }
+        .fullscreen-mode .cue-item .cue-number { font-size: 14px; width: 48px; }
+        .fullscreen-mode footer { position: absolute; bottom: 0; left: 0; right: 0; }
+
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--surface);
+            border: 1px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1002;
+        }
+
+        .install-prompt.show { display: flex; }
+        .install-prompt p { font-size: 13px; }
+        .install-prompt button { background: var(--primary); border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: 600; }
+    </style>
 </head>
 <body>
-  <div class="container">
-  <h2>To make sure WebCue works correctly, we need to check your browser and redirect you to the right place.</h2>
-  <h3>--------------------------------------------------</h3>
-    <h2>Just to let you know, WebCue full (Edge/Chrome) has had a makeover! If you run into issues, please contact us via GitHub. Thanks!</h2>
-    <h3>--------------------------------------------------</h3>
-    <img id="browser-icon" src="" alt="Browser Icon">
-    <h3 id="message">Detecting browser...</h3>
-    <button class="yes" onclick="redirect(true)">Yes</button>
-    <button class="no" onclick="showManualSelect()">No</button>
+    <header>
+        <div class="show-title">
+            <h1>⬡ WebCue</h1>
+            <input type="text" id="showName" value="Untitled Show" spellcheck="false">
+        </div>
+        <div class="transport">
+            <button class="btn-load" id="btnLoad" title="Load Show">↻ Load</button>
+            <button class="btn-stop" id="btnStop" title="Stop (Esc)">■ Stop</button>
+            <button class="btn-go" id="btnGo" title="Go (Space)">▶ Go</button>
+            <button class="btn-panic" id="btnPanic" title="Panic">◼ Panic</button>
+        </div>
+        <div class="header-actions">
+            <button id="btnNew">New</button>
+            <button id="btnOpen">Open</button>
+            <button id="btnSave">Save</button>
+            <button id="btnFullscreen" title="Fullscreen">⤢</button>
+            <button id="btnSettings">⚙ Settings</button>
+        </div>
+    </header>
 
-    <div id="manual-select">
-      <p>Please select your browser manually:</p>
-      <select id="browser-choice">
-        <option value="Chrome">Chrome</option>
-        <option value="Firefox">Firefox</option>
-        <option value="Safari">Safari</option>
-        <option value="Edge">Edge</option>
-        <option value="Unknown">Other</option>
-      </select>
-      <br>
-      <button onclick="manualRedirect()">Go</button>
+    <main>
+        <div class="cue-list-container">
+            <div class="cue-list-header">
+                <h2>Cues</h2>
+                <div class="cue-list-actions">
+                    <button id="btnAddCue" title="Add Cue">+</button>
+                    <button id="btnDuplicate" title="Duplicate">⧉</button>
+                </div>
+            </div>
+            <div class="cue-list" id="cueList">
+                <div class="cue-empty" id="cueEmpty">
+                    <div class="cue-empty-icon">📋</div>
+                    <div>No cues yet</div>
+                    <div style="font-size: 12px;">Press <kbd>+</kbd> to add a cue</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="editor-panel">
+            <div class="editor-header">
+                <h2>Edit Cue</h2>
+            </div>
+            <div class="editor-content" id="editorContent">
+                <div class="editor-empty" id="editorEmpty">
+                    <div>Select a cue to edit</div>
+                </div>
+                <div id="editorForm" style="display: none;">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="cueName" placeholder="Cue name">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="cueType">
+                            <option value="audio">🔊 Audio</option>
+                            <option value="video">🎬 Video</option>
+                            <option value="wait">⏱ Wait</option>
+                            <option value="command">💻 Command</option>
+                            <option value="qlc">💡 QLC+</option>
+                            <option value="group">📁 Group</option>
+                        </select>
+                    </div>
+                    <div class="form-group file-input-wrapper" id="fileGroup">
+                        <label>Media File</label>
+                        <input type="file" id="cueFile" accept="audio/*,video/*">
+                        <div class="file-input-display" id="fileDisplay">Click to select file...</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Duration (s)</label>
+                            <input type="number" id="cueDuration" placeholder="0" min="0" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Fade In (s)</label>
+                            <input type="number" id="cueFadeIn" placeholder="0" min="0" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Fade Out (s)</label>
+                        <input type="number" id="cueFadeOut" placeholder="0" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Volume</label>
+                        <input type="range" id="cueVolume" min="0" max="100" value="100" style="width: 100%;">
+                    </div>
+                    <div class="form-group" id="commandGroup" style="display: none;">
+                        <label>Command URL</label>
+                        <input type="text" id="cueCommand" placeholder="http://example.com/api">
+                    </div>
+                    <div class="form-group" id="qlcGroup" style="display: none;">
+                        <label>QLC+ Settings</label>
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 9px; color: var(--text-dim);">Universe (0-15)</label>
+                                <input type="number" id="qlcUniverse" min="0" max="15" value="0">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 9px; color: var(--text-dim);">Start Channel</label>
+                                <input type="number" id="qlcChannel" min="1" max="512" value="1">
+                            </div>
+                        </div>
+                        <label style="font-size: 9px; color: var(--text-dim);">Values (0-255, comma separated)</label>
+                        <input type="text" id="qlcValues" placeholder="255, 0, 128">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="cueNotes" placeholder="Notes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <div class="color-picker-wrapper" id="colorPicker">
+                            <div class="color-swatch selected" style="background: var(--primary);" data-color="primary"></div>
+                            <div class="color-swatch" style="background: #ff6b35;" data-color="orange"></div>
+                            <div class="color-swatch" style="background: #ff006e;" data-color="pink"></div>
+                            <div class="color-swatch" style="background: #8338ec;" data-color="purple"></div>
+                            <div class="color-swatch" style="background: #3a86ff;" data-color="blue"></div>
+                            <div class="color-swatch" style="background: #06d6a0;" data-color="green"></div>
+                            <div class="color-swatch" style="background: #ffbe0b;" data-color="yellow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="editor-footer" id="editorFooter" style="display: none;">
+                <button class="btn-delete" id="btnDeleteCue">Delete Cue</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="status-cue">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span id="statusCue">No cue playing</span>
+            <span id="nextCueInfo" style="margin-left: 12px; color: var(--pause);"></span>
+        </div>
+        <div class="status-load">
+            <div class="status-indicator" id="loadIndicator"></div>
+            <span id="loadStatus">Not loaded</span>
+        </div>
+        <div class="status-time">
+            <span id="statusTime">00:00.00</span>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="newShowModal">
+        <div class="modal">
+            <h3>New Show</h3>
+            <p style="color: var(--text-dim); font-size: 13px;">This will clear all current cues. Continue?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="newShowCancel">Cancel</button>
+                <button class="btn-confirm" id="newShowConfirm">New Show</button>
+            </div>
+        </div>
     </div>
 
-    <div id="mobile-warning">⚠️ You appear to be on a mobile device. This site is in no way styled for mobile devices. Many features will not work. If you want, you can still <a href="https://therealduckers.github.io/WebCue">go ahead</a></div>
-  </div>
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <h3>Settings <button class="modal-close" id="settingsClose">×</button></h3>
+            
+            <div class="settings-section">
+                <h4>Playback</h4>
+                <div class="setting-row">
+                    <label>Spacebar fires next cue</label>
+                    <input type="checkbox" id="settingNextCue" checked>
+                </div>
+                <div class="setting-row">
+                    <label>Auto-advance after cue ends</label>
+                    <input type="checkbox" id="settingAutoAdvance">
+                </div>
+            </div>
 
-  <!-- Fallback Modal -->
-  <div id="fallback-modal" class="modal">
-    <div class="modal-content">
-      <h2>⚠️ Unsupported or Unknown Browser</h2>
-      <p>We couldn’t identify your browser or it may not be supported.</p>
-      <p>Please try using <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/firefox/">Firefox</a>, <a href="https://www.apple.com/safari/">Safari</a>, or <a href="https://www.microsoft.com/edge">Edge</a>. If you want, you can still <a href="https://therealduckers.github.io/WebCue/versions/full">go ahead,</a> but some features may not work.</p> Using Opera? Select Chrome as your browser.
-      <button onclick="closeModal()">Close</button>
+            <div class="settings-section">
+                <h4>Appearance</h4>
+                <div class="setting-row">
+                    <label>Show cue numbers</label>
+                    <input type="checkbox" id="settingShowNumbers" checked>
+                </div>
+                <div class="setting-row">
+                    <label>Show duration</label>
+                    <input type="checkbox" id="settingShowDuration" checked>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4>QLC+ Integration</h4>
+                <div class="qlc-status">
+                    <div class="qlc-status-dot" id="qlcStatusDot"></div>
+                    <span id="qlcStatusText">Not configured</span>
+                </div>
+                <div class="setting-row">
+                    <label>QLC+ URL</label>
+                    <input type="text" id="settingQlcUrl" placeholder="http://localhost:9999">
+                </div>
+                <button class="qlc-test-btn" id="qlcTestBtn">Test Connection</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>Load Show</h4>
+                <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">
+                    Pre-loads all audio/video files before the show for instant playback.
+                </p>
+                <button class="btn-confirm" id="btnLoadSettings" style="width: 100%;">Pre-load All Media</button>
+                <div class="load-progress" id="loadProgress" style="display: none;">
+                    <div class="load-progress-bar"><div class="load-progress-fill" id="loadProgressFill" style="width: 0%"></div></div>
+                    <div class="load-status-text" id="loadStatusText">Loading...</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-confirm" id="settingsSave">Save</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const userAgent = navigator.userAgent;
-    let browser = "Unknown";
-    let icon = "";
-    let redirectLinks = {
-      Chrome: "https://therealduckers.github.io/WebCue/versions/full",
-      Firefox: "https://therealduckers.github.io/WebCue/versions/main",
-      Safari: "https://therealduckers.github.io/WebCue/versions/main",
-      Edge: "https://therealduckers.github.io/WebCue/versions/full",
-      Unknown: null // triggers fallback modal
-    };
+    <div class="toast" id="toast"></div>
 
-    if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
-      browser = "Chrome";
-      icon = "https://img.icons8.com/color/96/google-chrome.png";
-    } else if (userAgent.includes("Firefox")) {
-      browser = "Firefox";
-      icon = "https://img.icons8.com/color/96/firefox.png";
-    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
-      browser = "Safari";
-      icon = "https://img.icons8.com/color/96/safari--v1.png";
-    } else if (userAgent.includes("Edg")) {
-      browser = "Edge";
-      icon = "https://img.icons8.com/color/96/ms-edge-new.png";
-    }
+    <div class="install-prompt" id="installPrompt">
+        <p>Install WebCue for offline use</p>
+        <button id="btnInstall">Install</button>
+    </div>
 
-    document.getElementById("message").textContent = `We detected your browser is ${browser}. Is this correct?`;
-    document.getElementById("browser-icon").src = icon;
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
 
-    function redirect(isCorrect) {
-      if (isCorrect) {
-        if (redirectLinks[browser]) {
-          window.location.href = redirectLinks[browser];
-        } else {
-          showFallbackModal();
+    <script>
+        let show = { name: 'Untitled Show', cues: [] };
+        let selectedCueIndex = -1;
+        let runningCueIndex = -1;
+        let nextCueIndex = 0;
+        let isLoaded = false;
+        let loadedCues = new Set();
+        let audioContext = null;
+        let audioElements = {};
+        let videoElements = {};
+        let startTime = 0;
+        let prefs = {
+            spaceFiresNext: true,
+            autoAdvance: false,
+            showNumbers: true,
+            showDuration: true,
+            qlcUrl: ''
+        };
+        let deferredPrompt = null;
+
+        const cueList = document.getElementById('cueList');
+        const cueEmpty = document.getElementById('cueEmpty');
+        const editorEmpty = document.getElementById('editorEmpty');
+        const editorForm = document.getElementById('editorForm');
+        const editorFooter = document.getElementById('editorFooter');
+        const showNameInput = document.getElementById('showName');
+        const statusCue = document.getElementById('statusCue');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusTime = document.getElementById('statusTime');
+        const nextCueInfo = document.getElementById('nextCueInfo');
+        const loadIndicator = document.getElementById('loadIndicator');
+        const loadStatus = document.getElementById('loadStatus');
+        const toast = document.getElementById('toast');
+
+        function init() {
+            loadPrefs();
+            loadFromLocalStorage();
+            renderCueList();
+            setupEventListeners();
+            setupKeyboardShortcuts();
+            updateNextCueInfo();
+            setupPWA();
         }
-      } else {
-        showManualSelect();
-      }
-    }
 
-    function showManualSelect() {
-      document.getElementById("manual-select").style.display = "block";
-    }
+        function loadPrefs() {
+            try {
+                const saved = localStorage.getItem('webcue-prefs');
+                if (saved) prefs = { ...prefs, ...JSON.parse(saved) };
+            } catch (e) {}
+            document.getElementById('settingNextCue').checked = prefs.spaceFiresNext;
+            document.getElementById('settingAutoAdvance').checked = prefs.autoAdvance;
+            document.getElementById('settingShowNumbers').checked = prefs.showNumbers;
+            document.getElementById('settingShowDuration').checked = prefs.showDuration;
+            document.getElementById('settingQlcUrl').value = prefs.qlcUrl || '';
+        }
 
-    function manualRedirect() {
-      const selectedBrowser = document.getElementById("browser-choice").value;
-      if (redirectLinks[selectedBrowser]) {
-        window.location.href = redirectLinks[selectedBrowser];
-      } else {
-        showFallbackModal();
-      }
-    }
+        function savePrefs() {
+            prefs.spaceFiresNext = document.getElementById('settingNextCue').checked;
+            prefs.autoAdvance = document.getElementById('settingAutoAdvance').checked;
+            prefs.showNumbers = document.getElementById('settingShowNumbers').checked;
+            prefs.showDuration = document.getElementById('settingShowDuration').checked;
+            prefs.qlcUrl = document.getElementById('settingQlcUrl').value;
+            localStorage.setItem('webcue-prefs', JSON.stringify(prefs));
+            renderCueList();
+            showToast('Settings saved');
+        }
 
-    function showFallbackModal() {
-      document.getElementById("fallback-modal").style.display = "block";
-    }
+        async function loadShow() {
+            const mediaCues = show.cues.filter(c => (c.type === 'audio' || c.type === 'video') && c.fileData);
+            
+            if (mediaCues.length === 0) {
+                showToast('No media to load');
+                return;
+            }
 
-    function closeModal() {
-      document.getElementById("fallback-modal").style.display = "none";
-    }
+            document.getElementById('loadProgress').style.display = 'block';
+            loadedCues.clear();
+            isLoaded = false;
 
-    if (/Mobi|Android|iPhone|iPad|iPod/i.test(userAgent)) {
-      document.getElementById("mobile-warning").style.display = "block";
-    }
-  </script>
+            let loaded = 0;
+            const total = mediaCues.length;
+
+            for (const cue of mediaCues) {
+                const index = show.cues.indexOf(cue);
+                
+                try {
+                    if (cue.type === 'audio') {
+                        const audio = new Audio();
+                        audio.preload = 'auto';
+                        audio.src = cue.fileData;
+                        await new Promise((resolve, reject) => {
+                            audio.oncanplaythrough = resolve;
+                            audio.onerror = resolve;
+                            setTimeout(resolve, 5000);
+                        });
+                        audioElements[index] = audio;
+                    } else if (cue.type === 'video') {
+                        const video = document.createElement('video');
+                        video.preload = 'auto';
+                        video.src = cue.fileData;
+                        video.style.display = 'none';
+                        document.body.appendChild(video);
+                        await new Promise((resolve, reject) => {
+                            video.oncanplaythrough = resolve;
+                            video.onerror = resolve;
+                            setTimeout(resolve, 5000);
+                        });
+                        videoElements[index] = video;
+                    }
+                    loadedCues.add(index);
+                } catch (e) {
+                    console.warn('Failed to load cue:', cue.name);
+                }
+
+                loaded++;
+                const percent = (loaded / total) * 100;
+                document.getElementById('loadProgressFill').style.width = percent + '%';
+                document.getElementById('loadStatusText').textContent = `Loading ${loaded}/${total}: ${cue.name}`;
+            }
+
+            isLoaded = true;
+            loadIndicator.classList.add('loaded');
+            loadStatus.textContent = `Loaded (${loadedCues.size}/${total})`;
+            renderCueList();
+            showToast('Show loaded - ready to run');
+        }
+
+        function setupPWA() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                document.getElementById('installPrompt').classList.add('show');
+            });
+
+            document.getElementById('btnInstall').addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    document.getElementById('installPrompt').classList.remove('show');
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                document.getElementById('installPrompt').classList.remove('show');
+                showToast('WebCue installed!');
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('btnGo').addEventListener('click', goCue);
+            document.getElementById('btnStop').addEventListener('click', stopCue);
+            document.getElementById('btnPanic').addEventListener('click', panic);
+            document.getElementById('btnLoad').addEventListener('click', loadShow);
+            document.getElementById('btnAddCue').addEventListener('click', addCue);
+            document.getElementById('btnDuplicate').addEventListener('click', duplicateCue);
+            document.getElementById('btnDeleteCue').addEventListener('click', deleteCue);
+            document.getElementById('btnNew').addEventListener('click', showNewModal);
+            document.getElementById('btnOpen').addEventListener('click', openShow);
+            document.getElementById('btnSave').addEventListener('click', saveShow);
+            document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+            document.getElementById('btnSettings').addEventListener('click', () => document.getElementById('settingsModal').classList.add('active'));
+            document.getElementById('settingsClose').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('active'));
+            document.getElementById('settingsSave').addEventListener('click', () => { savePrefs(); document.getElementById('settingsModal').classList.remove('active'); });
+            document.getElementById('qlcTestBtn').addEventListener('click', testQlcConnection);
+            document.getElementById('btnLoadSettings').addEventListener('click', loadShow);
+            document.getElementById('newShowCancel').addEventListener('click', hideNewModal);
+            document.getElementById('newShowConfirm').addEventListener('click', newShow);
+
+            showNameInput.addEventListener('input', (e) => { show.name = e.target.value; saveToLocalStorage(); });
+
+            ['cueName', 'cueType', 'cueDuration', 'cueFadeIn', 'cueFadeOut', 'cueVolume', 'cueCommand', 'cueNotes', 'qlcUniverse', 'qlcChannel', 'qlcValues'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updateSelectedCue);
+            });
+
+            document.getElementById('cueType').addEventListener('change', (e) => {
+                const fileGroup = document.getElementById('fileGroup');
+                const commandGroup = document.getElementById('commandGroup');
+                const qlcGroup = document.getElementById('qlcGroup');
+                fileGroup.style.display = 'none';
+                commandGroup.style.display = 'none';
+                qlcGroup.style.display = 'none';
+                if (e.target.value === 'audio' || e.target.value === 'video') fileGroup.style.display = 'block';
+                else if (e.target.value === 'command') commandGroup.style.display = 'block';
+                else if (e.target.value === 'qlc') qlcGroup.style.display = 'block';
+                updateSelectedCue();
+            });
+
+            document.getElementById('cueFile').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    document.getElementById('fileDisplay').textContent = file.name;
+                    if (selectedCueIndex >= 0) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            show.cues[selectedCueIndex].fileData = ev.target.result;
+                            isLoaded = false;
+                            loadedCues.clear();
+                            loadIndicator.classList.remove('loaded');
+                            loadStatus.textContent = 'Not loaded';
+                            saveToLocalStorage();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+            document.getElementById('colorPicker').addEventListener('click', (e) => {
+                if (e.target.classList.contains('color-swatch')) {
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    updateSelectedCue();
+                }
+            });
+
+            document.getElementById('fileInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        try {
+                            show = JSON.parse(ev.target.result);
+                            showNameInput.value = show.name;
+                            selectedCueIndex = -1;
+                            runningCueIndex = -1;
+                            isLoaded = false;
+                            loadedCues.clear();
+                            audioElements = {};
+                            videoElements = {};
+                            renderCueList();
+                            saveToLocalStorage();
+                            showToast('Show loaded');
+                        } catch (err) {
+                            showToast('Error loading show file');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    goCue();
+                } else if (e.code === 'Escape') {
+                    stopCue();
+                } else if (e.code === 'Enter') {
+                    if (selectedCueIndex >= 0) fireCue(selectedCueIndex);
+                } else if (e.code === 'Delete') {
+                    if (selectedCueIndex >= 0) deleteCue();
+                } else if (e.code === 'ArrowDown') {
+                    e.preventDefault();
+                    if (selectedCueIndex < show.cues.length - 1) {
+                        selectedCueIndex++;
+                        renderCueList();
+                        loadCueIntoEditor();
+                    }
+                } else if (e.code === 'ArrowUp') {
+                    e.preventDefault();
+                    if (selectedCueIndex > 0) {
+                        selectedCueIndex--;
+                        renderCueList();
+                        loadCueIntoEditor();
+                    }
+                }
+            });
+        }
+
+        function addCue() {
+            const newCue = {
+                id: Date.now(),
+                name: `Cue ${show.cues.length + 1}`,
+                type: 'audio',
+                duration: 0,
+                fadeIn: 0,
+                fadeOut: 0,
+                volume: 100,
+                color: 'primary',
+                notes: '',
+                fileData: null,
+                qlcUniverse: 0,
+                qlcChannel: 1,
+                qlcValues: ''
+            };
+            show.cues.push(newCue);
+            selectedCueIndex = show.cues.length - 1;
+            renderCueList();
+            loadCueIntoEditor();
+            saveToLocalStorage();
+            showToast('Cue added');
+        }
+
+        function duplicateCue() {
+            if (selectedCueIndex < 0) return;
+            const cue = JSON.parse(JSON.stringify(show.cues[selectedCueIndex]));
+            cue.id = Date.now();
+            cue.name = cue.name + ' (copy)';
+            show.cues.splice(selectedCueIndex + 1, 0, cue);
+            selectedCueIndex++;
+            renderCueList();
+            loadCueIntoEditor();
+            saveToLocalStorage();
+            showToast('Cue duplicated');
+        }
+
+        function deleteCue() {
+            if (selectedCueIndex < 0) return;
+            const index = selectedCueIndex;
+            show.cues.splice(index, 1);
+            if (audioElements[index]) delete audioElements[index];
+            if (videoElements[index]) {
+                videoElements[index].remove();
+                delete videoElements[index];
+            }
+            loadedCues.delete(index);
+            selectedCueIndex = Math.min(selectedCueIndex, show.cues.length - 1);
+            renderCueList();
+            loadCueIntoEditor();
+            saveToLocalStorage();
+            showToast('Cue deleted');
+        }
+
+        function updateSelectedCue() {
+            if (selectedCueIndex < 0) return;
+            const cue = show.cues[selectedCueIndex];
+            cue.name = document.getElementById('cueName').value;
+            cue.type = document.getElementById('cueType').value;
+            cue.duration = parseFloat(document.getElementById('cueDuration').value) || 0;
+            cue.fadeIn = parseFloat(document.getElementById('cueFadeIn').value) || 0;
+            cue.fadeOut = parseFloat(document.getElementById('cueFadeOut').value) || 0;
+            cue.volume = parseInt(document.getElementById('cueVolume').value) || 100;
+            cue.command = document.getElementById('cueCommand').value;
+            cue.notes = document.getElementById('cueNotes').value;
+            cue.qlcUniverse = parseInt(document.getElementById('qlcUniverse').value) || 0;
+            cue.qlcChannel = parseInt(document.getElementById('qlcChannel').value) || 1;
+            cue.qlcValues = document.getElementById('qlcValues').value;
+            
+            const selectedColor = document.querySelector('.color-swatch.selected');
+            if (selectedColor) cue.color = selectedColor.dataset.color;
+
+            renderCueList();
+            saveToLocalStorage();
+        }
+
+        function goCue() {
+            let targetIndex = -1;
+            
+            if (runningCueIndex >= 0) {
+                targetIndex = runningCueIndex;
+            } else if (prefs.spaceFiresNext) {
+                targetIndex = nextCueIndex;
+                if (targetIndex >= show.cues.length) return;
+            } else if (selectedCueIndex >= 0) {
+                targetIndex = selectedCueIndex;
+            } else if (show.cues.length > 0) {
+                targetIndex = 0;
+            }
+
+            if (targetIndex >= 0) {
+                selectedCueIndex = targetIndex;
+                fireCue(targetIndex);
+                renderCueList();
+            }
+        }
+
+        function fireCue(index) {
+            stopCue();
+            const cue = show.cues[index];
+            if (!cue) return;
+
+            runningCueIndex = index;
+            nextCueIndex = index + 1;
+            startTime = Date.now();
+            renderCueList();
+            updateStatus();
+            updateNextCueInfo();
+
+            if (cue.type === 'audio' || cue.type === 'video') {
+                if (!isLoaded || !loadedCues.has(index)) {
+                    if (cue.fileData) {
+                        if (cue.type === 'audio') playAudio(cue);
+                        else playVideo(cue);
+                    } else {
+                        showToast('No media file loaded');
+                        runningCueIndex = -1;
+                        renderCueList();
+                        updateStatus();
+                    }
+                } else {
+                    if (cue.type === 'audio') playPreloadedAudio(index, cue);
+                    else playPreloadedVideo(index, cue);
+                }
+            } else if (cue.type === 'wait') {
+                setTimeout(() => {
+                    if (runningCueIndex === index) {
+                        runningCueIndex = -1;
+                        renderCueList();
+                        updateStatus();
+                        if (prefs.autoAdvance && nextCueIndex < show.cues.length) setTimeout(goCue, 100);
+                    }
+                }, cue.duration * 1000);
+            } else if (cue.type === 'command') {
+                if (cue.command) {
+                    fetch(cue.command, { mode: 'no-cors' })
+                        .catch(() => {})
+                        .finally(() => {
+                            if (runningCueIndex === index) {
+                                runningCueIndex = -1;
+                                renderCueList();
+                                updateStatus();
+                            }
+                        });
+                }
+            } else if (cue.type === 'qlc') {
+                sendQlc(cue);
+                setTimeout(() => {
+                    runningCueIndex = -1;
+                    renderCueList();
+                    updateStatus();
+                    if (prefs.autoAdvance && nextCueIndex < show.cues.length) setTimeout(goCue, 100);
+                }, 100);
+            }
+        }
+
+        function playAudio(cue) {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audio = new Audio();
+            audio.src = cue.fileData;
+            audio.volume = cue.volume / 100;
+            if (cue.fadeIn > 0) { audio.volume = 0; fadeIn(audio, cue.volume / 100, cue.fadeIn); }
+            audio.play().catch(() => showToast('Error playing audio'));
+            audio.onended = () => {
+                if (runningCueIndex === selectedCueIndex) {
+                    runningCueIndex = -1;
+                    renderCueList();
+                    updateStatus();
+                    if (prefs.autoAdvance && nextCueIndex < show.cues.length) setTimeout(goCue, 100);
+                }
+            };
+            audioElements['temp'] = audio;
+        }
+
+        function playPreloadedAudio(index, cue) {
+            const audio = audioElements[index];
+            if (!audio) { playAudio(cue); return; }
+            audio.currentTime = 0;
+            audio.volume = cue.volume / 100;
+            if (cue.fadeIn > 0) { audio.volume = 0; fadeIn(audio, cue.volume / 100, cue.fadeIn); }
+            audio.play().catch(() => showToast('Error playing audio'));
+            audio.onended = () => {
+                if (runningCueIndex === index) {
+                    runningCueIndex = -1;
+                    renderCueList();
+                    updateStatus();
+                    if (prefs.autoAdvance && nextCueIndex < show.cues.length) setTimeout(goCue, 100);
+                }
+            };
+        }
+
+        function playVideo(cue) {
+            const video = document.createElement('video');
+            video.src = cue.fileData;
+            video.volume = cue.volume / 100;
+            video.style.position = 'fixed';
+            video.style.top = '0';
+            video.style.left = '0';
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'contain';
+            video.style.background = '#000';
+            video.style.zIndex = '999';
+            document.body.appendChild(video);
+            if (cue.fadeIn > 0) { video.volume = 0; fadeIn(video, cue.volume / 100, cue.fadeIn); }
+            video.play().catch(() => showToast('Error playing video'));
+            video.onended = () => {
+                if (video.parentNode) video.parentNode.removeChild(video);
+                if (runningCueIndex === selectedCueIndex) {
+                    runningCueIndex = -1;
+                    renderCueList();
+                    updateStatus();
+                    if (prefs.autoAdvance && nextCueIndex < show.cues.length) setTimeout(goCue, 100);
+                }
+            };
+            videoElements['temp'] = video;
+        }
+
+        function playPreloadedVideo(index, cue) {
+            const video = videoElements[index];
+            if (!video) { playVideo(cue); return; }
+            video.style.position = 'fixed';
+            video.style.top = '0';
+            video.style.left = '0';
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'contain';
+            video.style.background = '#000';
+            video.style.zIndex = '999';
+            video.currentTime = 0;
+            video.volume = cue.volume / 100;
+            if (cue.fadeIn > 0) { video.volume = 0; fadeIn(video, cue.volume / 100, cue.fadeIn); }
+            video.play().catch(() => showToast('Error playing video'));
+            video.onended = () => {
+                if (runningCueIndex === index) {
+                    runningCueIndex = -1;
+                    renderCueList();
+                    updateStatus();
+                    if (prefs.autoAdvance && nextCueIndex < show.cues.length) setTimeout(goCue, 100);
+                }
+            };
+        }
+
+        function fadeIn(element, targetVolume, duration) {
+            const steps = 50;
+            const interval = (duration * 1000) / steps;
+            const increment = targetVolume / steps;
+            let current = 0;
+            const fadeInterval = setInterval(() => {
+                current += increment;
+                if (current >= targetVolume) { element.volume = targetVolume; clearInterval(fadeInterval); }
+                else { element.volume = current; }
+            }, interval);
+        }
+
+        function sendQlc(cue) {
+            if (!prefs.qlcUrl) { showToast('QLC+ URL not configured'); return; }
+            const values = cue.qlcValues.split(',').map(v => parseInt(v.trim()) || 0);
+            const startChannel = (cue.qlcUniverse * 512) + (cue.qlcChannel - 1);
+            const dmxData = new Uint8Array(513);
+            dmxData[0] = 0;
+            values.forEach((v, i) => { if (startChannel + i < 513) dmxData[startChannel + i] = v; });
+            fetch(prefs.qlcUrl + '/dmx', { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: dmxData }).catch(() => showToast('QLC+ send failed'));
+        }
+
+        function testQlcConnection() {
+            if (!prefs.qlcUrl) { showToast('Enter QLC+ URL first'); return; }
+            fetch(prefs.qlcUrl + '/version', { mode: 'no-cors' })
+                .then(() => {
+                    document.getElementById('qlcStatusDot').classList.add('connected');
+                    document.getElementById('qlcStatusText').textContent = 'Connected';
+                    showToast('QLC+ connected');
+                })
+                .catch(() => {
+                    document.getElementById('qlcStatusDot').classList.remove('connected');
+                    document.getElementById('qlcStatusText').textContent = 'Connection failed';
+                    showToast('QLC+ connection failed');
+                });
+        }
+
+        function stopCue() {
+            Object.values(audioElements).forEach(a => { if (a !== audioElements['temp']) { a.pause(); a.currentTime = 0; } });
+            if (audioElements['temp']) { audioElements['temp'].pause(); audioElements['temp'] = null; }
+            Object.values(videoElements).forEach(v => { if (v !== videoElements['temp']) { v.pause(); v.style.display = 'none'; } });
+            if (videoElements['temp']) { videoElements['temp'].pause(); if (videoElements['temp'].parentNode) videoElements['temp'].parentNode.removeChild(videoElements['temp']); videoElements['temp'] = null; }
+            runningCueIndex = -1;
+            renderCueList();
+            updateStatus();
+        }
+
+        function panic() {
+            stopCue();
+            if (prefs.qlcUrl) {
+                const dmxData = new Uint8Array(513);
+                fetch(prefs.qlcUrl + '/dmx', { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: dmxData }).catch(() => {});
+            }
+            showToast('All cues stopped');
+        }
+
+        function toggleFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        }
+
+        function renderCueList() {
+            if (show.cues.length === 0) {
+                cueEmpty.style.display = 'flex';
+                cueList.querySelectorAll('.cue-item').forEach(el => el.remove());
+                return;
+            }
+            cueEmpty.style.display = 'none';
+            cueList.querySelectorAll('.cue-item').forEach(el => el.remove());
+
+            const icons = { audio: '🔊', video: '🎬', wait: '⏱', command: '💻', qlc: '💡', group: '📁' };
+
+            show.cues.forEach((cue, index) => {
+                const item = document.createElement('div');
+                item.className = 'cue-item';
+                if (index === selectedCueIndex) item.classList.add('selected');
+                if (index === runningCueIndex) item.classList.add('running');
+                if (index === nextCueIndex && runningCueIndex < 0) item.classList.add('next-cue');
+                if (isLoaded && loadedCues.has(index)) item.classList.add('loaded');
+                item.draggable = true;
+
+                const colorStyle = cue.color !== 'primary' ? `border-left-color: ${getColor(cue.color)} !important;` : '';
+                const durationStr = prefs.showDuration && cue.duration > 0 ? `<span class="cue-duration">${cue.duration}s</span>` : '';
+                const numberStr = prefs.showNumbers ? `<span class="cue-number">${String(index + 1).padStart(2, '0')}</span>` : '';
+                const loadStr = isLoaded && loadedCues.has(index) ? '<span class="cue-load-status">✓</span>' : '';
+
+                item.innerHTML = `${numberStr}<span class="cue-icon">${icons[cue.type] || '📋'}</span><span class="cue-name">${cue.name}</span>${durationStr}${loadStr}`;
+                if (colorStyle) item.style.cssText += colorStyle;
+
+                item.addEventListener('click', () => { selectedCueIndex = index; renderCueList(); loadCueIntoEditor(); });
+                item.addEventListener('dblclick', () => { selectedCueIndex = index; fireCue(index); });
+
+                item.addEventListener('dragstart', (e) => { item.classList.add('dragging'); e.dataTransfer.setData('text/plain', index); });
+                item.addEventListener('dragend', () => item.classList.remove('dragging'));
+                item.addEventListener('dragover', (e) => { e.preventDefault(); item.classList.add('drag-over'); });
+                item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    item.classList.remove('drag-over');
+                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIndex = index;
+                    if (fromIndex !== toIndex) {
+                        const [moved] = show.cues.splice(fromIndex, 1);
+                        show.cues.splice(toIndex, 0, moved);
+                        if (selectedCueIndex === fromIndex) selectedCueIndex = toIndex;
+                        renderCueList();
+                        saveToLocalStorage();
+                    }
+                });
+
+                cueList.appendChild(item);
+            });
+        }
+
+        function getColor(name) {
+            const colors = { orange: '#ff6b35', pink: '#ff006e', purple: '#8338ec', blue: '#3a86ff', green: '#06d6a0', yellow: '#ffbe0b' };
+            return colors[name] || '#00d4aa';
+        }
+
+        function loadCueIntoEditor() {
+            if (selectedCueIndex < 0) { editorEmpty.style.display = 'flex'; editorForm.style.display = 'none'; editorFooter.style.display = 'none'; return; }
+            const cue = show.cues[selectedCueIndex];
+            editorEmpty.style.display = 'none';
+            editorForm.style.display = 'block';
+            editorFooter.style.display = 'block';
+
+            document.getElementById('cueName').value = cue.name;
+            document.getElementById('cueType').value = cue.type;
+            document.getElementById('cueDuration').value = cue.duration || '';
+            document.getElementById('cueFadeIn').value = cue.fadeIn || '';
+            document.getElementById('cueFadeOut').value = cue.fadeOut || '';
+            document.getElementById('cueVolume').value = cue.volume || 100;
+            document.getElementById('cueCommand').value = cue.command || '';
+            document.getElementById('cueNotes').value = cue.notes || '';
+            document.getElementById('qlcUniverse').value = cue.qlcUniverse || 0;
+            document.getElementById('qlcChannel').value = cue.qlcChannel || 1;
+            document.getElementById('qlcValues').value = cue.qlcValues || '';
+            document.getElementById('fileDisplay').textContent = cue.fileData ? 'File loaded' : 'Click to select file...';
+
+            const fileGroup = document.getElementById('fileGroup');
+            const commandGroup = document.getElementById('commandGroup');
+            const qlcGroup = document.getElementById('qlcGroup');
+            fileGroup.style.display = 'none'; commandGroup.style.display = 'none'; qlcGroup.style.display = 'none';
+            if (cue.type === 'audio' || cue.type === 'video') fileGroup.style.display = 'block';
+            else if (cue.type === 'command') commandGroup.style.display = 'block';
+            else if (cue.type === 'qlc') qlcGroup.style.display = 'block';
+
+            document.querySelectorAll('.color-swatch').forEach(s => { s.classList.toggle('selected', s.dataset.color === cue.color); });
+        }
+
+        function updateStatus() {
+            if (runningCueIndex >= 0) {
+                const cue = show.cues[runningCueIndex];
+                statusCue.textContent = `Running: ${cue.name}`;
+                statusIndicator.classList.add('active');
+            } else {
+                statusCue.textContent = 'No cue playing';
+                statusIndicator.classList.remove('active');
+            }
+        }
+
+        function updateNextCueInfo() {
+            if (runningCueIndex >= 0 && nextCueIndex < show.cues.length) nextCueInfo.textContent = `Next: ${show.cues[nextCueIndex].name}`;
+            else if (runningCueIndex < 0 && nextCueIndex < show.cues.length) nextCueInfo.textContent = `Next: ${show.cues[nextCueIndex].name}`;
+            else nextCueInfo.textContent = '';
+        }
+
+        function saveToLocalStorage() { try { localStorage.setItem('webcue-show', JSON.stringify(show)); } catch (e) {} }
+
+        function loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem('webcue-show');
+                if (saved) { show = JSON.parse(saved); showNameInput.value = show.name; }
+            } catch (e) {}
+        }
+
+        function showNewModal() { document.getElementById('newShowModal').classList.add('active'); }
+        function hideNewModal() { document.getElementById('newShowModal').classList.remove('active'); }
+
+        function newShow() {
+            show = { name: 'Untitled Show', cues: [] };
+            showNameInput.value = show.name;
+            selectedCueIndex = -1;
+            runningCueIndex = -1;
+            nextCueIndex = 0;
+            isLoaded = false;
+            loadedCues.clear();
+            audioElements = {};
+            videoElements = {};
+            loadIndicator.classList.remove('loaded');
+            loadStatus.textContent = 'Not loaded';
+            renderCueList();
+            loadCueIntoEditor();
+            saveToLocalStorage();
+            hideNewModal();
+            showToast('New show created');
+        }
+
+        function openShow() { document.getElementById('fileInput').click(); }
+
+        function saveShow() {
+            const data = JSON.stringify(show, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = (show.name || 'show') + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Show saved');
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        setInterval(() => {
+            if (runningCueIndex >= 0) {
+                const elapsed = (Date.now() - startTime) / 1000;
+                const mins = Math.floor(elapsed / 60);
+                const secs = Math.floor(elapsed % 60);
+                const ms = Math.floor((elapsed % 1) * 100);
+                statusTime.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(ms).padStart(2, '0')}`;
+            } else {
+                statusTime.textContent = '00:00.00';
+            }
+        }, 50);
+
+        init();
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        }
+    </script>
 </body>
 </html>
-

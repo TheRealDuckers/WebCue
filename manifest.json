@@ -1,0 +1,18 @@
+{
+  "name": "WebCue - Show Control",
+  "short_name": "WebCue",
+  "description": "Web-based QLab alternative for show control",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
