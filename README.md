@@ -7,7 +7,7 @@ Web-based show control for theater, live events, and presentations. A free, QLab
 ## URLs
 
 - **Desktop**: [webcue.duckers.dev](https://webcue.duckers.dev)
-- **Mobile**: [webcue.duckers.dev/mobile.html](https://webcue.duckers.dev/mobile)
+- **Mobile**: [webcue.duckers.dev/mobile](https://webcue.duckers.dev/mobile)
 - **Docs**: [webcue.duckers.dev/docs](https://webcue.duckers.dev/docs)
 
 ## Quick Start
