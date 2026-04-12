@@ -2,6 +2,8 @@
 
 Web-based show control for theater, live events, and presentations. A free, QLab-style cue player that runs entirely in the browser.
 
+> To use the new version, you may have to force refresh (Ctrl + Shift + R)
+
 ## URLs
 
 - **Desktop**: [webcue.duckers.dev](https://webcue.duckers.dev)
