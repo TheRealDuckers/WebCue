@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCue Docs</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/docs.css">
+</head>
+        
+        .sidebar-toggle:hover {
+            background: var(--surface-hover);
+            color: var(--green);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 50;
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--green);
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-logo i { margin-right: 8px; }
+        
+        .sidebar-section {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            padding: 12px 20px 6px;
+            font-weight: 600;
+        }
+        
+        .sidebar-link {
+            display: block;
+            padding: 10px 20px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-link:hover {
+            background: var(--surface-hover);
+            color: var(--green);
+        }
+        
+        .sidebar-link.active {
+            background: var(--surface-hover);
+            border-left-color: var(--green);
+            color: var(--green);
+        }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 40px 60px;
+            max-width: calc(100% - var(--sidebar-width));
+            transition: margin-left 0.3s ease;
+        }
+        
+        .main.sidebar-collapsed {
+            margin-left: 0;
+        }
+        
+        h1 {
+            color: var(--green);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        h2 {
+            color: var(--green);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin: 2.5rem 0 1rem;
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            color: var(--text);
+            margin: 1.5rem 0 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        p { margin: 1rem 0; }
+        
+        code {
+            background: var(--surface);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: var(--green);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-right: 6px;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .tag.audio { background: var(--green); }
+        .tag.video { background: #4c8ce6; color: #fff; }
+        .tag.wait { background: #e6d14c; color: #000; }
+        .tag.command { background: #8c4ce6; color: #fff; }
+        .tag.qlc { background: #e68c4c; color: #fff; }
+        
+        ul { margin: 1rem 0; padding-left: 1.5rem; }
+        li { margin: 0.5rem 0; }
+        
+        .shortcut-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .shortcut-table th, .shortcut-table td {
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .shortcut-table th { color: var(--green); }
+        
+        kbd {
+            background: var(--surface);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            border: 1px solid var(--border);
+            font-size: 0.9em;
+        }
+        
+        .note {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--green);
+            padding: 12px 16px;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; padding: 20px; max-width: 100%; }
+            .sidebar-toggle { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><i class="fas fa-theater-masks"></i> WC</div>
+        
+        <div class="sidebar-section">Getting Started</div>
+        <a href="#quickstart" class="sidebar-link">Quick Start</a>
+        <a href="#first-show" class="sidebar-link">Your First Show</a>
+        
+        <div class="sidebar-section">Interface</div>
+        <a href="#interface" class="sidebar-link">Layout</a>
+        <a href="#shortcuts" class="sidebar-link">Keyboard Shortcuts</a>
+        <a href="#go-behavior" class="sidebar-link">GO Behavior</a>
+        
+        <div class="sidebar-section">Cue Types</div>
+        <a href="#audio-video" class="sidebar-link">Audio & Video</a>
+        <a href="#wait" class="sidebar-link">Wait</a>
+        <a href="#command" class="sidebar-link">Command</a>
+        <a href="#qlc" class="sidebar-link">QLC+ DMX</a>
+        
+        <div class="sidebar-section">Advanced</div>
+        <a href="#autoload" class="sidebar-link">Loading Media</a>
+        <a href="#osc" class="sidebar-link">OSC Output</a>
+        <a href="#settings" class="sidebar-link">Settings</a>
+        <a href="#hosting" class="sidebar-link">Hosting</a>
+    </nav>
+
+    <main>
+        <h1>WebCue</h1>
+        <p class="subtitle">Web-based show control at <strong>webcue.duckers.dev</strong></p>
+        
+        <h2 id="quickstart">Quick Start</h2>
+        
+        <ol>
+            <li>Open <a href="https://webcue.duckers.dev" style="color: var(--green);">webcue.duckers.dev</a> in your browser</li>
+            <li>Click <strong>NEW</strong> to create a new show</li>
+            <li>Click <kbd>+</kbd> to add a cue</li>
+            <li>Select your audio or video file</li>
+            <li>Press <kbd>Space</kbd> or click <strong>GO</strong> to fire</li>
+        </ol>
+        
+        <div class="note">
+            <strong>Tip:</strong> Before your show, click <strong>LOAD</strong> to pre-load all audio/video files. This ensures instant playback without loading delays.
+        </div>
+        
+        <h2 id="first-show">Your First Show</h2>
+        
+        <ol>
+            <li>Click <strong>NEW</strong> in the header</li>
+            <li>Click <kbd>+</kbd> to add your first cue</li>
+            <li>Enter a name (e.g., "Opening Music")</li>
+            <li>Select your audio file</li>
+            <li>Add more cues with <kbd>+</kbd></li>
+            <li>Drag cues to reorder them</li>
+            <li>Click <strong>SAVE</strong> to download your show file</li>
+        </ol>
+        
+        <h2 id="interface">Interface Layout</h2>
+        
+        <p><strong>Header:</strong> Show name, transport controls (LOAD, STOP, FADE, GO, PANIC), action buttons</p>
+        <p><strong>Cue List:</strong> Your cues - shows cue #, type (A/V/W/C/D), name, duration</p>
+        <p><strong>Editor:</strong> Edit selected cue - name, type, file, timing, volume, notes, color</p>
+        <p><strong>Footer:</strong> Status (running cue), notes, load status, time, keyboard hints</p>
+        
+        <h2 id="shortcuts">Keyboard Shortcuts</h2>
+        
+        <table class="shortcut-table">
+            <tr><th>Key</th><th>Action</th></tr>
+            <tr><td><kbd>Space</kbd></td><td>GO - Fire selected cue</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>STOP</td></tr>
+            <tr><td><kbd>F</kbd></td><td>FADE - Fade out audio</td></tr>
+            <tr><td><kbd>Shift</kbd>+<kbd>Esc</kbd></td><td>PANIC - All stop + DMX blackout</td></tr>
+            <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Select cue</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Fire selected cue</td></tr>
+            <tr><td><kbd>Delete</kbd></td><td>Delete selected cue</td></tr>
+        </table>
+        
+        <h2 id="go-behavior">GO Behavior (QLab-style)</h2>
+        
+        <p>When you press GO:</p>
+        <ol>
+            <li>Fires the currently selected cue</li>
+            <li>Automatically selects the <strong>next cue</strong></li>
+            <li>Next GO fires that next cue</li>
+        </ol>
+        
+        <p>This is exactly like QLab's GO pedal - just keep pressing GO to fire through your show in order.</p>
+        
+        <h2 id="audio-video">Audio & Video Cues</h2>
+        
+        <ul>
+            <li><span class="tag audio">A</span> <strong>AUDIO</strong> - Plays an audio file</li>
+            <li><span class="tag video">V</span> <strong>VIDEO</strong> - Plays video fullscreen</li>
+        </ul>
+        
+        <p><strong>Volume:</strong> Set 0-100% per cue</p>
+        <p><strong>Fade In/Out:</strong> Duration in seconds</p>
+        <p><strong>LOAD first:</strong> Click LOAD before your show to pre-load all media for instant playback</p>
+        
+        <h2 id="wait">Wait Cue</h2>
+        
+        <p><span class="tag wait">W</span> <strong>WAIT</strong> - Pauses for specified duration</p>
+        <p>Duration in seconds - the show waits before auto-advancing (if enabled)</p>
+        
+        <h2 id="command">Command Cue</h2>
+        
+        <p><span class="tag command">C</span> <strong>COMMAND</strong> - Sends an HTTP request</p>
+        <p>Useful for triggering other software, APIs, or home automation.</p>
+        
+        <pre>http://192.168.1.100:8080/trigger</pre>
+        
+        <h2 id="qlc">QLC+ DMX Cue</h2>
+        
+        <p><span class="tag qlc">D</span> <strong>QLC+</strong> - Controls DMX lights via QLC+</p>
+        
+        <ol>
+            <li>In QLC+, enable Settings > Network > Enable HTTP Server</li>
+            <li>In WebCue Settings, enter QLC+ URL</li>
+            <li>Cue settings: Universe (0-15), Channel (1-512), Values (0-255 comma-separated)</li>
+        </ol>
+        
+        <pre>Universe: 0
+Channel: 1
+Values: 255, 128, 64</pre>
+        
+        <h2 id="autoload">Loading Media</h2>
+        
+        <p>For reliable instant playback, pre-load all media before your show:</p>
+        
+        <ol>
+            <li>Click <strong>LOAD</strong> in transport bar</li>
+            <li>Or Settings > Pre-load All Media</li>
+            <li>Loaded cues show a green checkmark ✓</li>
+        </ol>
+        
+        <div class="note">
+            <strong>Important:</strong> If media doesn't load, you may need to interact with the page first (browser security requires user gesture for media playback).
+        </div>
+        
+        <h2 id="osc">OSC Output</h2>
+        
+        <p>Send cue data to other apps via OSC/HTTP:</p>
+        <ul>
+            <li>Configure host and port in Settings</li>
+            <li>JSON is sent on each GO: <code>{"cue": 1, "name": "Cue 1", "type": "audio"}</code></li>
+        </ul>
+        
+        <h2 id="settings">Settings</h2>
+        
+        <ul>
+            <li><strong>Space = GO</strong> - Spacebar fires next cue (enable/disable)</li>
+            <li><strong>Auto-advance</strong> - Automatically fire next cue when current ends</li>
+            <li><strong>QLC+ URL</strong> - For DMX control</li>
+            <li><strong>OSC Host/Port</strong> - For external integration</li>
+        </ul>
+        
+        <h2 id="hosting">Hosting</h2>
+        
+        <p>No server needed - runs entirely in the browser. Host anywhere:</p>
+        <ul>
+            <li><strong>webcue.duckers.dev</strong> - Official hosted version</li>
+            <li>GitHub Pages (free)</li>
+            <li>Vercel / Netlify (free)</li>
+            <li>Local web server</li>
+            <li>Run locally: <code>python -m http.server 8000</code></li>
+        </ul>
+        
+        <h2>License</h2>
+        <p>MIT License - Open source, free to use.</p>
+        
+        <p style="margin-top: 3rem; color: var(--text-dim); font-size: 0.9em;">
+            <a href="https://webcue.duckers.dev" style="color: var(--green);">webcue.duckers.dev</a><br>
+            <a href="https://github.com/anomalyco/webcue" style="color: var(--text-dim);">GitHub</a>
+        </p>
+    </main>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.querySelector('.main');
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('sidebar-collapsed');
+        }
+    </script>
+</body>
+</html>

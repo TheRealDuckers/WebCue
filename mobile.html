@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WebCue Mobile</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+    <a href="./" class="settings-link"><i class="fas fa-desktop"></i></a>
+    
+    <header>
+        <h1>WC</h1>
+        <input type="text" id="showName" value="Untitled Show" onchange="save()">
+    </header>
+
+    <div class="transport">
+        <button class="btn-stop" onclick="stop()"><i class="fas fa-stop"></i> STOP</button>
+        <button class="btn-go" onclick="go()"><i class="fas fa-play"></i> GO</button>
+        <button class="btn-panic" onclick="panic()"><i class="fas fa-ban"></i></button>
+    </div>
+
+    <div class="main">
+        <div class="cue-list" id="cueList">
+            <div class="empty" id="empty">
+                <div>No cues</div>
+                <div style="font-size: 14px; margin-top: 8px;">Tap + to add</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-bar">
+        <button onclick="addCue()">+</button>
+    </div>
+
+    <footer>
+        <div class="status">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim);" id="dot"></div>
+            <span id="status">READY</span>
+        </div>
+        <div id="time">00:00</div>
+    </footer>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <button class="close-modal" onclick="closeModal()">×</button>
+        <div>
+            <h2>EDIT CUE</h2>
+            <input type="text" id="cueName" placeholder="Cue name">
+            <select id="cueType">
+                <option value="audio">AUDIO</option>
+                <option value="video">VIDEO</option>
+                <option value="wait">WAIT</option>
+            </select>
+            <div class="row">
+                <input type="number" id="cueDuration" placeholder="Duration (s)" step="0.1">
+            </div>
+            <textarea id="cueNotes" placeholder="Notes" rows="2"></textarea>
+            <input type="range" id="cueVolume" min="0" max="100" value="100">
+            <label style="display: block; margin-bottom: 12px; font-size: 14px;">Volume: <span id="volDisplay">100%</span></label>
+            <input type="file" id="cueFile" accept="audio/*,video/*" style="display: none;">
+            <button class="btn-secondary" onclick="document.getElementById('cueFile').click()">
+                <i class="fas fa-file"></i> Select File
+            </button>
+            <button class="btn-primary" onclick="saveCue()">SAVE</button>
+            <button class="btn-secondary" style="margin-top: 8px; color: var(--red);" onclick="deleteCue()">DELETE</button>
+        </div>
+    </div>
+
+    <script src="js/mobile.js"></script>
+</body>
+</html>

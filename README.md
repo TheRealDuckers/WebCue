@@ -1,108 +1,79 @@
-# WebCue Lab v3.5
+# WebCue
 
->### 🚨 ALL PREVIOUS ERRORS FIXED!!!
+Web-based show control for theater, live events, and presentations. A free, QLab-style cue player that runs entirely in the browser.
 
-### A web version of QLab — Docs v4.5
+## URLs
 
-#### You're welcome.
+- **Desktop**: [webcue.duckers.dev](https://webcue.duckers.dev)
+- **Mobile**: [webcue.duckers.dev/mobile.html](https://webcue.duckers.dev/mobile)
+- **Docs**: [webcue.duckers.dev/docs](https://webcue.duckers.dev/docs)
 
----
+## Quick Start
 
-## 📘 WebCue Docs
+### Desktop
 
-### 🔍 Overview
+1. Open [webcue.duckers.dev](https://webcue.duckers.dev)
+2. Click **NEW** to create a show
+3. Click **+** to add a cue
+4. Select an audio or video file
+5. Press **GO** (or Spacebar) to fire
 
-WebCue is a web-based alternative to QLab, designed to run audio and lighting cues directly in your browser. It’s perfect for live performances, theater productions, or any event needing a cool "GO" button.
+### Mobile
 
-> _"Why use WebCue? It's a ‘cue’-less decision 😄."_
+1. Open [webcue.duckers.dev/mobile.html](https://webcue.duckers.dev/mobile.html)
+2. Tap **+** to add a cue
+3. Select media file
+4. Tap **GO** to fire
 
----
+## Features
 
-### ✨ Features
+- **Cue Types**: Audio, Video, Wait, Command, QLC+ DMX
+- **Keyboard Shortcuts**: Space (GO), Esc (Stop), F (Fade), Arrows (navigate)
+- **QLC+ Integration**: Control DMX lights via QLC+
+- **OSC Output**: Send cue data to other apps
+- **PWA Installable**: Works offline, install as app
 
-- **Cue Management**: Manual or auto-advance cues. Like a playlist, but fewer awkward song choices.
-- **Lighting Integration**: Control QLC+ via web interface. _No disco ball required._
-- **File Upload**: Upload audio folders (Chrome/Edge) or individual files (others).
-- **BETA Features**: Swipe/arrow key shortcuts. Still buggy... use at your own risk.
-- **Cross-Browser Support**: Works, but Firefox/Safari need extra patience. Just use Chrome/Edge. Please and thank you.
+## Keyboard Shortcuts
 
----
+| Key | Action |
+|-----|--------|
+| Space | GO - Fire selected cue |
+| Esc | STOP |
+| F | FADE - Fade out audio |
+| Shift+Esc | PANIC - All stop + DMX blackout |
+| ↑/↓ | Navigate cue list |
+| Enter | Fire selected cue |
+| Delete | Delete selected cue |
 
-### 🚀 Quick Start Guide
+## GO Behavior
 
-1. **Open WebCue**: [Launch WebCue](https://therealduckers.github.io/WebCue)
-2. **Pick Your Browser Mode**:
-   - **Chromium (Chrome/Edge)**: Upload a **folder**. Easy.
-   - **Others**: Upload **files**.
-3. **Create Cues**:
-   - Rename, add notes, set **Follow** (Auto/Manual).
-   - **QLC+ Lighting**: see separate instructions below...
-4. **Save/Load Shows**: "Save Show" → "Load Show" → re-upload files/allow directory accsess (told you it would be easier)
-5. **Hit GO**:
-   - Click, spacebar, or **swipe left** (BETA).
-   - **Fade**: on current selected cue (use up and down arrow keys to select cues)
-   - **Stop**: Pretty obvious if you ask me....
-6. **Tips**:
-   - Auto-match cues to files. (don't need the same name on file as in WebCue...again, use chrome/edge and use a folder)
-   - _"If it glitches, it’s a feature, not a bug… right?"_ (just hurry up and report it...)
+When you press GO:
+1. Fires the selected cue
+2. Automatically selects the next cue
+3. Press GO again to fire the next cue
 
----
+This is exactly like QLab's GO pedal.
 
-### 🎭 Use Cases
+## Loading Media
 
-- **Theater Productions**: Sync sound effects, music, and stage lighting.  
-  _Example_: Cue a thunderstorm sound + dim lights. (yes, that is the start of the Percy Jackson musical...)
+For instant playback without loading delays:
 
-- **Live Music**: Trigger backing tracks and spotlights.  
-  _Example_: Guitar solo → spotlight + delay effect.
+1. Add all your cues with audio/video files
+2. Click **LOAD** to pre-load all media
+3. Loaded cues show a green checkmark ✓
 
-- **Podcasts**: Play sound effects on cue.  
-  _Example_: "Dramatic pause" → suspenseful music.
+## QLC+ DMX Setup
 
----
+1. In QLC+, enable Settings > Network > HTTP Server
+2. Note the URL (e.g., `http://localhost:9999`)
+3. In WebCue Settings, enter the QLC+ URL
+4. Create QLC+ cue type with universe, channel, and DMX values
 
-### 💡 QLC+ Integration
 
-1. Launch QLC+ with `--web`.
-2. Create a function, grab the ID (e.g., `startfunction:1`).
-3. Paste the number (1 in this case) into WebCue’s lighting field.
+## License
 
-> _"Boom. Lights. 🎉"_
-
----
-
-### ⌨️ Keyboard Shortcuts (BETA only)
-
-- **Left Arrow**: GO — _"Like advancing a cringe slideshow."_
-- **Right Arrow**: Fade — _"Like fading into the shadows… gracefully."_
-- **Swipe**: Mobile magic. Don’t trip.
+MIT License - Open source, free to use and modify.
 
 ---
 
-### 🛠️ Troubleshooting
-
-- **Files Not Loading?**: Re-upload, or press GO and wait a minute. It's slow on first load.  
-  _"Restart the Wi-Fi. Or the universe."_
-
-- **Other Errors? Oh, goodie...**  
-  [Report Issues](https://github.com/TheRealDuckers/WebCue/issues) — _"No judgment. Just fix it."_
-
----
-
-### 🤝 Contributing
-
-- Fork the repo: [WebCue on GitHub](https://github.com/TheRealDuckers/WebCue)
-- Fix a bug, add a feature, or a joke.
-- Docs: [WebCue Docs](https://github.com/TheRealDuckers/WebCue/blob/main/docs.html)
-
----
-
-### 📄 License
-
-MIT — _"Use it, choose it, just don’t **relicense** it to confuse everyone."_
-
-Need help? Visit the [Wiki](https://github.com/TheRealDuckers/WebCue/wiki) or open an issue (that sigh you heard was me, btw...).
-
----
-
-Made with ❤️ by **Duckers**
+Built with ♫ by [Duckers](https://duckers.dev)
