@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCue - Web-based Show Control</title>
+    <meta name="description" content="Free, browser-based show control software. A QLab alternative that runs entirely in your browser with audio/video playback, QLC+ DMX integration, keyboard shortcuts, and PWA support.">
+    <meta name="keywords" content="show control, QLab alternative, lighting control, DMX, QLC+, audio playback, video playback, theater, stage management">
+    <meta name="author" content="WebCue">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta property="og:title" content="WebCue - Web-based Show Control">
+    <meta property="og:description" content="Free, browser-based show control software. A QLab alternative that runs entirely in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webcue.duckers.dev">
+    <meta property="og:image" content="https://webcue.duckers.dev/icon-192.svg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="WebCue - Web-based Show Control">
+    <meta name="twitter:description" content="Free, browser-based show control software. A QLab alternative that runs entirely in your browser.">
+    <meta name="twitter:image" content="https://webcue.duckers.dev/icon-192.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/webcue.css">
+</head>
+<body>
+    <div class="startup-screen" id="startupScreen">
+        <div class="startup-logo"><i class="fas fa-theater-masks"></i> WC</div>
+        <div class="startup-subtitle">WebCue - Web-based Show Control</div>
+        <div class="startup-actions">
+            <button class="startup-btn" onclick="newShow()"><i class="fas fa-plus"></i> New Show</button>
+            <button class="startup-btn" onclick="openShow()"><i class="fas fa-folder-open"></i> Open / Import</button>
+            <div class="startup-divider">or</div>
+            <button class="startup-btn" onclick="goCue(); hideStartup()"><i class="fas fa-play"></i> Go (Quick Start)</button>
+            <div class="startup-hint"><p>Tip: Press <kbd>LOAD</kbd> after adding cues to pre-load all media for instant playback</p></div>
+        </div>
+        <div class="startup-footer">
+            <a href="mobile.html"><i class="fas fa-mobile-alt"></i> Mobile</a>
+            <a href="docs/"><i class="fas fa-book"></i> Docs</a>
+            <a href="https://github.com/anomalyco/webcue" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+    </div>
+
+    <div id="mainApp" style="display: none; flex-direction: column; height: 100vh;">
+        <header>
+            <div class="show-title">
+                <h1>WC</h1>
+                <input type="text" id="showName" value="Untitled Show">
+            </div>
+            <div class="transport">
+                <button class="btn-preview" id="btnPreview" title="Preview selected cue (Ctrl+Space)"><i class="fas fa-headphones"></i> PREVIEW</button>
+                <button class="btn-load" id="btnLoad" title="Pre-load all media"><i class="fas fa-download"></i> LOAD</button>
+                <button class="btn-stop" id="btnStop" title="Stop all"><i class="fas fa-stop"></i> STOP</button>
+                <button class="btn-fade" id="btnFade" title="Fade out audio"><i class="fas fa-feather-alt"></i> FADE</button>
+                <button class="btn-go" id="btnGo" title="Fire selected cue (Space)"><i class="fas fa-play"></i> GO</button>
+                <button class="btn-panic" id="btnPanic" title="All stop + DMX blackout (Shift+Esc)"><i class="fas fa-ban"></i> PANIC</button>
+            </div>
+            <div class="header-actions">
+                <button id="btnUndo" title="Undo (Ctrl+Z)" disabled><i class="fas fa-undo"></i></button>
+                <button id="btnRedo" title="Redo (Ctrl+Y)" disabled><i class="fas fa-redo"></i></button>
+                <button id="btnNew" title="New Show"><i class="fas fa-plus"></i></button>
+                <button id="btnOpen" title="Open"><i class="fas fa-folder-open"></i></button>
+                <button id="btnSave" title="Save"><i class="fas fa-save"></i></button>
+                <button id="btnSettings" title="Settings"><i class="fas fa-cog"></i></button>
+            </div>
+        </header>
+
+        <main>
+            <div class="cue-list-container">
+                <div class="cue-list-header">
+                    <span>CUES <span class="count" id="cueCount">(0)</span></span>
+                    <div class="cue-list-actions">
+                        <button id="btnAddCue" title="Add Cue"><i class="fas fa-plus"></i></button>
+                        <button id="btnDuplicate" title="Duplicate"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+                <div class="cue-search" id="cueSearch">
+                    <input type="text" id="searchInput" placeholder="Filter cues..." />
+                </div>
+                <div class="cue-list" id="cueList">
+                    <div class="cue-empty" id="cueEmpty">
+                        <div>NO CUES</div>
+                        <div style="font-size: 12px;">+ to add cue</div>
+                    </div>
+                    <div class="load-hint" id="loadHint" style="display: none;">
+                        <div>NOT LOADED</div>
+                        <div>Click LOAD to pre-load media for instant playback</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-panel">
+                <div class="editor-header">EDIT CUE</div>
+                <div class="editor-content" id="editorContent">
+                    <div class="editor-empty" id="editorEmpty">Select a cue</div>
+                    <div id="editorForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" id="cueName">
+                            <div class="field-live">Live</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="cueType">
+                                <option value="audio">AUDIO</option>
+                                <option value="video">VIDEO</option>
+                                <option value="wait">WAIT</option>
+                                <option value="command">COMMAND</option>
+                                <option value="qlc">QLC+</option>
+                                <option value="group">GROUP</option>
+                            </select>
+                        </div>
+                        <div class="form-group file-input-wrapper" id="fileGroup">
+                            <label>Media File</label>
+                            <input type="file" id="cueFile" accept="audio/*,video/*">
+                            <div class="file-input-display" id="fileDisplay">Select file...</div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Duration (s)</label>
+                                <input type="number" id="cueDuration" min="0" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Fade In (s)</label>
+                                <input type="number" id="cueFadeIn" min="0" step="0.1">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fade Out (s)</label>
+                                <input type="number" id="cueFadeOut" min="0" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Volume <span id="volumeDisplay">100%</span></label>
+                                <input type="range" id="cueVolume" min="0" max="100" value="100">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-row-inline">
+                                <input type="checkbox" id="cueLoop">
+                                <label for="cueLoop" style="margin-bottom:0;">Loop</label>
+                            </div>
+                            <div class="form-row-inline">
+                                <input type="checkbox" id="cueCrossfade">
+                                <label for="cueCrossfade" style="margin-bottom:0;">Crossfade</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="commandGroup" style="display: none;">
+                            <label>Command URL</label>
+                            <input type="text" id="cueCommand" placeholder="http://example.com/api">
+                        </div>
+                        <div class="form-group" id="qlcGroup" style="display: none;">
+                            <label>QLC+ Settings</label>
+                            <div class="form-row">
+                                <input type="number" id="qlcUniverse" min="0" max="15" value="0" placeholder="Universe">
+                                <input type="number" id="qlcChannel" min="1" max="512" value="1" placeholder="Channel">
+                            </div>
+                            <input type="text" id="qlcValues" placeholder="DMX values (0-255)" style="margin-top: 10px;">
+                        </div>
+                        <div class="form-group" id="groupChildrenGroup" style="display: none;">
+                            <label>Group Children (cue indices)</label>
+                            <input type="text" id="groupChildren" placeholder="e.g. 3,4,5">
+                        </div>
+                        <div class="form-group">
+                            <label>Go To Cue #</label>
+                            <input type="number" id="cueGoTo" min="0" placeholder="(none)">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="cueNotes" placeholder="Notes..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <div class="color-badges" id="colorPicker">
+                                <div class="color-badge selected" style="background: var(--qlab-green);" data-color="green"></div>
+                                <div class="color-badge" style="background: #e64c4c;" data-color="red"></div>
+                                <div class="color-badge" style="background: #e6d14c;" data-color="yellow"></div>
+                                <div class="color-badge" style="background: #4c8ce6;" data-color="blue"></div>
+                                <div class="color-badge" style="background: #8c4ce6;" data-color="purple"></div>
+                                <div class="color-badge" style="background: #4ce68c;" data-color="teal"></div>
+                                <div class="color-badge" style="background: #e68c4c;" data-color="orange"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="editor-footer" id="editorFooter" style="display: none;">
+                    <div class="editor-footer-row">
+                        <button id="btnMoveUp" title="Move up"><i class="fas fa-chevron-up"></i></button>
+                        <button id="btnMoveDown" title="Move down"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <button class="btn-delete" id="btnDeleteCue"><i class="fas fa-trash"></i> DELETE CUE</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="status-left">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">READY</span>
+                <span id="nextText" style="color: var(--qlab-yellow); margin-left: 16px;"></span>
+            </div>
+            <div class="status-notes" id="statusNotes"></div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="status-dot" id="autoSaveDot"></div>
+                <span id="autoSaveText"></span>
+                <div class="status-dot" id="loadDot"></div>
+                <span id="loadText">NOT LOADED</span>
+                <span class="status-time" id="statusTime">00:00.00</span>
+                <span class="status-countdown" id="countdownDisplay"></span>
+            </div>
+            <div class="shortcuts-hint">
+                <span><kbd>Space</kbd> GO</span>
+                <span><kbd>Esc</kbd> STOP</span>
+                <span><kbd>F</kbd> FADE</span>
+                <span><kbd>↑↓</kbd> SCROLL</span>
+                <span><kbd>Ctrl+Z</kbd> UNDO</span>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal-overlay" id="newShowModal">
+        <div class="modal">
+            <h3>NEW SHOW <button class="modal-close" id="newShowClose">×</button></h3>
+            <p style="color: var(--text-dim); font-size: 14px;">Clear all cues?</p>
+            <div class="modal-actions">
+                <button id="newShowCancel">CANCEL</button>
+                <button class="btn-confirm" id="newShowConfirm">NEW SHOW</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmDeleteModal">
+        <div class="modal">
+            <h3>DELETE CUE <button class="modal-close" id="confirmDeleteClose">×</button></h3>
+            <p style="color: var(--text-dim); font-size: 14px;">Are you sure you want to delete <strong id="deleteCueName">this cue</strong>?</p>
+            <div class="modal-actions">
+                <button id="confirmDeleteCancel">CANCEL</button>
+                <button class="btn-danger" id="confirmDeleteConfirm">DELETE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <h3>SETTINGS <button class="modal-close" id="settingsClose">×</button></h3>
+            <div class="settings-section">
+                <h4>Keyboard Shortcuts</h4>
+                <div class="shortcut-row"><span class="shortcut-label">Fire Cue (GO)</span><span class="shortcut-key">Space</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Stop Cue</span><span class="shortcut-key">Esc</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Fade Out</span><span class="shortcut-key">F</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Panic (All Stop)</span><span class="shortcut-key">Shift+Esc</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Preview</span><span class="shortcut-key">Ctrl+Space</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Undo</span><span class="shortcut-key">Ctrl+Z</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Redo</span><span class="shortcut-key">Ctrl+Y</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Scroll Up</span><span class="shortcut-key">↑</span></div>
+                <div class="shortcut-row"><span class="shortcut-label">Scroll Down</span><span class="shortcut-key">↓</span></div>
+            </div>
+            <div class="settings-section">
+                <h4>Playback</h4>
+                <div class="setting-row"><span>Space = GO (next cue)</span><input type="checkbox" id="settingNextCue" checked></div>
+                <div class="setting-row"><span>Auto-advance</span><input type="checkbox" id="settingAutoAdvance"></div>
+                <div class="setting-row"><span>Auto-save on changes</span><input type="checkbox" id="settingAutoSave" checked></div>
+                <div class="setting-row"><span>Crossfade default</span><input type="checkbox" id="settingDefaultCrossfade"></div>
+            </div>
+            <div class="settings-section">
+                <h4>QLC+ Output</h4>
+                <div class="qlc-status"><div class="qlc-status-dot" id="qlcStatusDot"></div><span id="qlcStatusText">Not configured</span></div>
+                <div class="setting-row"><span>QLC+ URL</span><input type="text" id="settingQlcUrl" placeholder="http://localhost:9999" style="width: 180px;"></div>
+                <div class="output-row">
+                    <button id="qlcTestBtn"><i class="fas fa-plug"></i> TEST</button>
+                    <button id="qlcBlackoutBtn"><i class="fas fa-moon"></i> BLACKOUT</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h4>OSC Output</h4>
+                <div class="qlc-status"><div class="qlc-status-dot" id="oscStatusDot"></div><span id="oscStatusText">Not configured</span></div>
+                <div class="setting-row"><span>OSC Host</span><input type="text" id="settingOscHost" placeholder="localhost" style="width: 120px;"></div>
+                <div class="setting-row"><span>OSC Port</span><input type="number" id="settingOscPort" placeholder="8000" style="width: 80px;"></div>
+            </div>
+            <div class="settings-section">
+                <h4>MIDI Input</h4>
+                <div class="midi-status"><div class="midi-status-dot" id="midiStatusDot"></div><span id="midiStatusText">Not available</span></div>
+                <div class="setting-row"><span>MIDI note for GO</span><input type="number" id="settingMidiNote" value="36" style="width: 60px;"></div>
+                <div class="setting-row"><span>MIDI note for STOP</span><input type="number" id="settingMidiStop" value="44" style="width: 60px;"></div>
+            </div>
+            <div class="settings-section">
+                <h4>WebSocket Remote</h4>
+                <div class="setting-row"><span>Enable remote control</span><input type="checkbox" id="settingWsRemote"></div>
+                <div class="setting-row"><span>WebSocket port</span><input type="number" id="settingWsPort" value="8080" style="width: 80px;"></div>
+            </div>
+            <div class="settings-section">
+                <h4>View</h4>
+                <div class="setting-row"><span>Mobile View</span><input type="checkbox" id="settingMobileView"></div>
+                <button class="btn-confirm" id="btnMobileView" style="width: 100%; margin-top: 10px;">OPEN MOBILE VIEW</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-confirm" id="settingsSave">SAVE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <div class="install-prompt" id="installPrompt"><span>Install WebCue</span><button id="btnInstall">INSTALL</button></div>
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+
+    <script src="js/webcue.js"></script>
+</body>
+</html>

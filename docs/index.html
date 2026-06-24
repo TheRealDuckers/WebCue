@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebCue Documentation - Web-based Show Control</title>
+    <meta name="description" content="Official documentation for WebCue - free, browser-based show control software. Learn how to use audio/video playback, QLC+ DMX integration, keyboard shortcuts, and more.">
+    <meta name="keywords" content="WebCue docs, show control documentation, QLab alternative docs, DMX documentation, QLC+ tutorial">
+    <meta name="author" content="WebCue">
+    <meta property="og:title" content="WebCue Documentation">
+    <meta property="og:description" content="Learn how to use WebCue - free browser-based show control">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webcue.duckers.dev/docs/">
+    <meta property="og:image" content="https://webcue.duckers.dev/icon-192.svg">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/docs.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><i class="fas fa-theater-masks"></i> WC</div>
+        <div class="sidebar-section">Getting Started</div>
+        <a href="#quickstart" class="sidebar-link">Quick Start</a>
+        <a href="#first-show" class="sidebar-link">Your First Show</a>
+        <div class="sidebar-section">Interface</div>
+        <a href="#interface" class="sidebar-link">Layout</a>
+        <a href="#shortcuts" class="sidebar-link">Keyboard Shortcuts</a>
+        <a href="#go-behavior" class="sidebar-link">GO Behavior</a>
+        <div class="sidebar-section">Cue Types</div>
+        <a href="#audio-video" class="sidebar-link">Audio & Video</a>
+        <a href="#wait" class="sidebar-link">Wait</a>
+        <a href="#command" class="sidebar-link">Command</a>
+        <a href="#qlc" class="sidebar-link">QLC+ DMX</a>
+        <a href="#group" class="sidebar-link">Group Cues</a>
+        <div class="sidebar-section">Features</div>
+        <a href="#autoload" class="sidebar-link">Loading Media</a>
+        <a href="#loop" class="sidebar-link">Loop & Crossfade</a>
+        <a href="#preview" class="sidebar-link">Preview</a>
+        <a href="#undo" class="sidebar-link">Undo / Redo</a>
+        <a href="#drag" class="sidebar-link">Drag & Drop</a>
+        <a href="#search" class="sidebar-link">Cue Search</a>
+        <a href="#midi" class="sidebar-link">MIDI Input</a>
+        <a href="#websocket" class="sidebar-link">Remote Control</a>
+        <div class="sidebar-section">Advanced</div>
+        <a href="#osc" class="sidebar-link">OSC Output</a>
+        <a href="#settings" class="sidebar-link">Settings</a>
+        <a href="#hosting" class="sidebar-link">Hosting</a>
+    </nav>
+
+    <main class="main">
+        <h1>WebCue</h1>
+        <p class="subtitle">Web-based show control at <strong>webcue.duckers.dev</strong></p>
+
+        <h2 id="quickstart">Quick Start</h2>
+        <ol>
+            <li>Open <a href="https://webcue.duckers.dev" style="color: var(--green);">webcue.duckers.dev</a> in your browser</li>
+            <li>Click <strong>NEW</strong> to create a new show</li>
+            <li>Click <kbd>+</kbd> to add a cue</li>
+            <li>Select your audio or video file</li>
+            <li>Press <kbd>Space</kbd> or click <strong>GO</strong> to fire</li>
+        </ol>
+        <div class="note"><strong>Tip:</strong> Before your show, click <strong>LOAD</strong> to pre-load all audio/video files. This ensures instant playback without loading delays.</div>
+
+        <h2 id="first-show">Your First Show</h2>
+        <ol>
+            <li>Click <strong>NEW</strong> in the header</li>
+            <li>Click <kbd>+</kbd> to add your first cue</li>
+            <li>Enter a name (e.g., "Opening Music")</li>
+            <li>Select your audio file</li>
+            <li>Add more cues with <kbd>+</kbd></li>
+            <li>Drag cues to reorder them</li>
+            <li>Click <strong>SAVE</strong> to download your show file</li>
+        </ol>
+
+        <h2 id="interface">Interface Layout</h2>
+        <p><strong>Header:</strong> Show name, transport controls (PREVIEW, LOAD, STOP, FADE, GO, PANIC), Undo/Redo, action buttons</p>
+        <p><strong>Cue List:</strong> Your cues - shows cue #, type (A/V/W/C/D/G), name, duration, loop indicator, color coding</p>
+        <p><strong>Search:</strong> Filter cues by name, notes, or number</p>
+        <p><strong>Editor:</strong> Edit selected cue - name, type, file, timing, volume, notes, color, loop, crossfade</p>
+        <p><strong>Footer:</strong> Status (running cue), notes, auto-save indicator, load status, elapsed time, countdown, keyboard hints</p>
+
+        <h2 id="shortcuts">Keyboard Shortcuts</h2>
+        <table class="shortcut-table">
+            <tr><th>Key</th><th>Action</th></tr>
+            <tr><td><kbd>Space</kbd></td><td>GO - Fire selected cue</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>Space</kbd></td><td>PREVIEW - Preview selected cue</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>STOP</td></tr>
+            <tr><td><kbd>F</kbd></td><td>FADE - Fade out audio</td></tr>
+            <tr><td><kbd>Shift</kbd>+<kbd>Esc</kbd></td><td>PANIC - All stop + DMX blackout</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>UNDO</td></tr>
+            <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>REDO</td></tr>
+            <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Select cue</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Fire selected cue</td></tr>
+            <tr><td><kbd>Delete</kbd></td><td>Delete selected cue (with confirmation)</td></tr>
+        </table>
+
+        <h2 id="go-behavior">GO Behavior (QLab-style)</h2>
+        <p>When you press GO:</p>
+        <ol>
+            <li>Fires the currently selected cue</li>
+            <li>Automatically selects the <strong>next cue</strong></li>
+            <li>Next GO fires that next cue</li>
+        </ol>
+        <p>This is exactly like QLab's GO pedal - just keep pressing GO to fire through your show in order.</p>
+
+        <h2 id="audio-video">Audio & Video Cues</h2>
+        <ul>
+            <li><span class="tag audio">A</span> <strong>AUDIO</strong> - Plays an audio file</li>
+            <li><span class="tag video">V</span> <strong>VIDEO</strong> - Plays video fullscreen</li>
+        </ul>
+        <p><strong>Volume:</strong> Set 0-100% per cue</p>
+        <p><strong>Fade In/Out:</strong> Duration in seconds</p>
+        <p><strong>Loop:</strong> Check "Loop" in editor to repeat audio/video until stopped</p>
+        <p><strong>Crossfade:</strong> Check "Crossfade" to smoothly fade out previous audio when this cue fires</p>
+        <p><strong>LOAD first:</strong> Click LOAD before your show to pre-load all media for instant playback</p>
+
+        <h2 id="wait">Wait Cue</h2>
+        <p><span class="tag wait">W</span> <strong>WAIT</strong> - Pauses for specified duration</p>
+        <p>Duration in seconds - the show waits before auto-advancing (if enabled)</p>
+
+        <h2 id="command">Command Cue</h2>
+        <p><span class="tag command">C</span> <strong>COMMAND</strong> - Sends an HTTP request</p>
+        <p>Useful for triggering other software, APIs, or home automation.</p>
+        <pre>http://192.168.1.100:8080/trigger</pre>
+
+        <h2 id="qlc">QLC+ DMX Cue</h2>
+        <p><span class="tag qlc">D</span> <strong>QLC+</strong> - Controls DMX lights via QLC+</p>
+        <ol>
+            <li>In QLC+, enable Settings > Network > Enable HTTP Server</li>
+            <li>In WebCue Settings, enter QLC+ URL</li>
+            <li>Cue settings: Universe (0-15), Channel (1-512), Values (0-255 comma-separated)</li>
+        </ol>
+        <pre>Universe: 0
+Channel: 1
+Values: 255, 128, 64</pre>
+
+        <h2 id="group">Group Cues</h2>
+        <p><span class="tag">G</span> <strong>GROUP</strong> - Fires multiple cues simultaneously</p>
+        <p>Enter cue numbers (1-indexed) separated by commas in the "Group Children" field. When a GROUP cue fires, all child cues fire at once.</p>
+
+        <h2 id="autoload">Loading Media</h2>
+        <p>For reliable instant playback, pre-load all media before your show:</p>
+        <ol>
+            <li>Click <strong>LOAD</strong> in transport bar</li>
+            <li>Loaded cues show a green checkmark ✓</li>
+        </ol>
+        <div class="note"><strong>Important:</strong> If media doesn't load, you may need to interact with the page first (browser security requires user gesture for media playback).</div>
+
+        <h2 id="loop">Loop & Crossfade</h2>
+        <p><strong>Loop:</strong> Enable on audio/video cues to repeat playback until manually stopped or the next cue fires.</p>
+        <p><strong>Crossfade:</strong> When enabled on an audio cue, the previously playing audio will fade out while the new one fades in. Configure the fade-out duration on the previous cue.</p>
+
+        <h2 id="preview">Preview</h2>
+        <p>Click <strong>PREVIEW</strong> or press <kbd>Ctrl</kbd>+<kbd>Space</kbd> to play a selected cue without firing the GO chain (doesn't auto-advance or trigger next cues). Useful for sound checks and testing.</p>
+
+        <h2 id="undo">Undo / Redo</h2>
+        <p>WebCue tracks up to 50 history states. Use <kbd>Ctrl</kbd>+<kbd>Z</kbd> to undo and <kbd>Ctrl</kbd>+<kbd>Y</kbd> to redo changes. The undo/redo buttons in the header show available states.</p>
+
+        <h2 id="drag">Drag & Drop Reordering</h2>
+        <p>Drag any cue item up or down in the cue list to reorder. A green border shows the drop target.</p>
+
+        <h2 id="search">Cue Search</h2>
+        <p>Use the search bar above the cue list to filter cues by name, notes, type, or number. Non-matching cues are hidden.</p>
+
+        <h2 id="midi">MIDI Input</h2>
+        <p>Connect a MIDI controller (foot pedal, keyboard, etc.) to trigger cues:</p>
+        <ul>
+            <li>Configure MIDI note numbers for GO and STOP in Settings</li>
+            <li>Default: MIDI note 36 = GO, note 44 = STOP</li>
+            <li>Works with any Web MIDI-compatible browser (Chrome, Edge)</li>
+        </ul>
+
+        <h2 id="websocket">Remote Control</h2>
+        <p>Enable WebSocket remote in Settings to control WebCue from another device:</p>
+        <ul>
+            <li>Configure a WebSocket port (default: 8080)</li>
+            <li>Send JSON commands: <code>{"action":"go"}</code>, <code>{"action":"stop"}</code>, <code>{"action":"panic"}</code>, <code>{"action":"fade"}</code>, <code>{"action":"fire","index":0}</code></li>
+        </ul>
+
+        <h2 id="osc">OSC Output</h2>
+        <p>Send cue data to other apps via OSC/HTTP:</p>
+        <ul>
+            <li>Configure host and port in Settings</li>
+            <li>JSON is sent on each GO: <code>{"cue": 1, "name": "Cue 1", "type": "audio"}</code></li>
+        </ul>
+
+        <h2 id="settings">Settings</h2>
+        <ul>
+            <li><strong>Space = GO</strong> - Spacebar fires next cue</li>
+            <li><strong>Auto-advance</strong> - Automatically fire next cue when current ends</li>
+            <li><strong>Auto-save</strong> - Save show to localStorage on every change</li>
+            <li><strong>Crossfade default</strong> - Enable crossfade on new cues by default</li>
+            <li><strong>QLC+ URL</strong> - For DMX control</li>
+            <li><strong>OSC Host/Port</strong> - For external integration</li>
+            <li><strong>MIDI notes</strong> - Configure MIDI note numbers for GO and STOP</li>
+            <li><strong>WebSocket remote</strong> - Enable/disable remote control</li>
+            <li><strong>Mobile View</strong> - Toggle mobile layout</li>
+        </ul>
+        <h2>License</h2>
+        <p>MIT License - Open source, free to use.</p>
+
+        <p style="margin-top: 3rem; color: var(--text-dim); font-size: 0.9em;">
+            <a href="https://webcue.duckers.dev" style="color: var(--green);">webcue.duckers.dev</a><br>
+            <a href="https://github.com/anomalyco/webcue" style="color: var(--text-dim);">GitHub</a>
+        </p>
+    </main>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main').classList.toggle('sidebar-collapsed');
+        }
+    </script>
+</body>
+</html>
