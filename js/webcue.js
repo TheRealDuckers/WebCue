@@ -293,6 +293,30 @@ function setupEventListeners() {
         }
     });
 
+    document.getElementById('btnImportMedia').addEventListener('click', importMedia);
+    document.getElementById('mediaImportInput').addEventListener('change', e => {
+        if (e.target.files.length > 0) handleMediaFiles(e.target.files);
+        e.target.value = '';
+    });
+
+    // Drag-and-drop files onto cue list
+    const cueListEl = document.getElementById('cueList');
+    const dropOverlay = document.getElementById('cueDropOverlay');
+    cueListEl.addEventListener('dragenter', e => {
+        if (e.dataTransfer.types.includes('Files')) { e.preventDefault(); dropOverlay.classList.add('show'); }
+    });
+    cueListEl.addEventListener('dragover', e => {
+        if (e.dataTransfer.types.includes('Files')) { e.preventDefault(); dropOverlay.classList.add('show'); }
+    });
+    cueListEl.addEventListener('dragleave', e => {
+        if (!e.currentTarget.contains(e.relatedTarget)) dropOverlay.classList.remove('show');
+    });
+    cueListEl.addEventListener('drop', e => {
+        e.preventDefault();
+        dropOverlay.classList.remove('show');
+        if (e.dataTransfer.files.length > 0) handleMediaFiles(e.dataTransfer.files);
+    });
+
     document.getElementById('fileInput').addEventListener('change', e => {
         const file = e.target.files[0];
         if (file) {
@@ -356,6 +380,54 @@ function moveCueDown() {
     show.cues[selectedCueIndex + 1] = tmp;
     selectedCueIndex++;
     pushHistory(); renderCueList(); loadCueIntoEditor(); scrollToSelected();
+}
+
+function importMedia() {
+    document.getElementById('mediaImportInput').click();
+}
+
+function handleMediaFiles(files) {
+    let total = 0;
+    for (const file of files) {
+        if (file.type.startsWith('audio/') || file.type.startsWith('video/')) total++;
+    }
+    if (total === 0) { showToast('NO MEDIA FILES'); return; }
+    let done = 0;
+    for (const file of files) {
+        if (!file.type.startsWith('audio/') && !file.type.startsWith('video/')) continue;
+        const type = file.type.startsWith('audio/') ? 'audio' : 'video';
+        const name = file.name.replace(/\.[^/.]+$/, '').substring(0, 40);
+        const reader = new FileReader();
+        reader.onload = ev => {
+            show.cues.push({
+                id: Date.now() + done,
+                name: name,
+                type: type,
+                duration: 0,
+                fadeIn: 0,
+                fadeOut: 0,
+                volume: 100,
+                notes: '',
+                fileData: ev.target.result,
+                qlcUniverse: 0,
+                qlcChannel: 1,
+                qlcValues: '',
+                goTo: 0,
+                color: 'green',
+                loop: false,
+                crossfade: prefs.defaultCrossfade,
+                children: []
+            });
+            done++;
+            if (done === total) {
+                selectedCueIndex = show.cues.length - 1;
+                isLoaded = false; loadedCues.clear(); loadDot.classList.remove('loaded'); loadText.textContent = 'NOT LOADED';
+                pushHistory(); renderCueList(); loadCueIntoEditor(); scrollToSelected();
+                showToast(`${total} CUES IMPORTED`);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 function addCue() {
@@ -432,7 +504,7 @@ function updateSelectedCue() {
     cue.crossfade = document.getElementById('cueCrossfade').checked;
     const selectedColor = document.querySelector('.color-badge.selected');
     if (selectedColor) cue.color = selectedColor.dataset.color;
-    renderCueList(); updateNotesDisplay();
+    renderCueList(); updateNotesDisplay(); updateSelectedCueInfo();
 }
 
 function updateNotesDisplay() {
@@ -694,8 +766,19 @@ function renderCueList() {
     });
 }
 
+function updateSelectedCueInfo() {
+    const info = document.getElementById('selectedCueInfo');
+    if (selectedCueIndex < 0 || !show.cues[selectedCueIndex]) { info.style.display = 'none'; return; }
+    const cue = show.cues[selectedCueIndex];
+    const types = { audio: 'A', video: 'V', wait: 'W', command: 'C', qlc: 'D', group: 'G' };
+    document.getElementById('selCueType').textContent = types[cue.type] || '?';
+    document.getElementById('selCueName').textContent = cue.name;
+    document.getElementById('selCueDesc').textContent = cue.notes || '';
+    info.style.display = 'flex';
+}
+
 function loadCueIntoEditor() {
-    if (selectedCueIndex < 0) { editorEmpty.style.display = 'flex'; editorForm.style.display = 'none'; editorFooter.style.display = 'none'; statusNotes.textContent = ''; return; }
+    if (selectedCueIndex < 0) { editorEmpty.style.display = 'flex'; editorForm.style.display = 'none'; editorFooter.style.display = 'none'; statusNotes.textContent = ''; updateSelectedCueInfo(); return; }
     const cue = show.cues[selectedCueIndex];
     editorEmpty.style.display = 'none'; editorForm.style.display = 'block'; editorFooter.style.display = 'block';
     document.getElementById('cueName').value = cue.name;
@@ -731,6 +814,7 @@ function loadCueIntoEditor() {
 
     document.querySelectorAll('.color-badge').forEach(b => { b.classList.toggle('selected', b.dataset.color === cue.color); });
     updateNotesDisplay();
+    updateSelectedCueInfo();
 }
 
 function updateStatus() { runningCueIndex >= 0 ? (statusDot.classList.add('active'), statusText.textContent = show.cues[runningCueIndex].name) : (statusDot.classList.remove('active'), statusText.textContent = 'READY'); }

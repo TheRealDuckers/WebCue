@@ -76,12 +76,19 @@
                     <div class="cue-list-actions">
                         <button id="btnAddCue" title="Add Cue"><i class="fas fa-plus"></i></button>
                         <button id="btnDuplicate" title="Duplicate"><i class="fas fa-copy"></i></button>
+                        <button id="btnImportMedia" title="Import media files"><i class="fas fa-upload"></i></button>
                     </div>
                 </div>
                 <div class="cue-search" id="cueSearch">
                     <input type="text" id="searchInput" placeholder="Filter cues..." />
                 </div>
+                <div class="selected-cue-info" id="selectedCueInfo" style="display: none;">
+                    <span class="selected-cue-type" id="selCueType">A</span>
+                    <span class="selected-cue-name" id="selCueName">Cue Name</span>
+                    <span class="selected-cue-desc" id="selCueDesc">Notes</span>
+                </div>
                 <div class="cue-list" id="cueList">
+                    <div class="cue-drop-overlay" id="cueDropOverlay">DROP FILES TO ADD CUES</div>
                     <div class="cue-empty" id="cueEmpty">
                         <div>NO CUES</div>
                         <div style="font-size: 12px;">+ to add cue</div>
@@ -306,6 +313,7 @@
     <div class="toast" id="toast"></div>
     <div class="install-prompt" id="installPrompt"><span>Install WebCue</span><button id="btnInstall">INSTALL</button></div>
     <input type="file" id="fileInput" accept=".json" style="display: none;">
+    <input type="file" id="mediaImportInput" accept="audio/*,video/*" multiple style="display: none;">
 
     <script src="js/webcue.js"></script>
 </body>
