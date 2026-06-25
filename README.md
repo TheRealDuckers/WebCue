@@ -1,5 +1,8 @@
 # WebCue
 
+# <u> IMPORTANT: To "update" your version of WebCue so you have all the latest features, please do a force refresh - Ctrl+Shift+R</u>
+
+
 Web-based show control for theater, live events, and presentations. A free, QLab-style cue player that runs entirely in the browser.
 
 ## URLs
