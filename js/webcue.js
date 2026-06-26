@@ -7,7 +7,7 @@ let loadedCues = new Set();
 let audioElements = {};
 let videoElements = {};
 let startTime = 0;
-let prefs = { spaceFiresNext: true, autoAdvance: false, autoSave: true, defaultCrossfade: false, qlcUrl: '', oscHost: '', oscPort: 0, mobileView: false, midiNote: 36, midiStop: 44, wsRemote: false, wsPort: 8080 };
+let prefs = { spaceFiresNext: true, autoAdvance: false, autoSave: true, defaultCrossfade: false, qlcUrl: '', oscHost: '', oscPort: 0, mobileView: false, midiNote: 36, midiStop: 44, wsRemote: false, wsPort: 8080, compactMode: false, theme: 'green' };
 let deferredPrompt = null;
 
 const cueList = document.getElementById('cueList');
@@ -43,8 +43,19 @@ function hideStartup() {
     document.getElementById('mainApp').style.display = 'flex';
 }
 
+function applyTheme() {
+    document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
+    if (prefs.theme && prefs.theme !== 'green') document.body.classList.add('theme-' + prefs.theme);
+}
+
+function applyCompactMode() {
+    document.body.classList.toggle('compact', prefs.compactMode);
+}
+
 function init() {
     loadPrefs();
+    applyTheme();
+    applyCompactMode();
     loadFromLocalStorage();
     renderCueList();
     setupEventListeners();
@@ -54,6 +65,7 @@ function init() {
     showStartupScreen();
     setupMIDI();
     setupWebSocket();
+    setupResizeHandle();
 }
 
 function checkMobileView() {
@@ -77,6 +89,8 @@ function loadPrefs() {
     document.getElementById('settingOscHost').value = prefs.oscHost || 'localhost';
     document.getElementById('settingOscPort').value = prefs.oscPort || 8000;
     document.getElementById('settingMobileView').checked = prefs.mobileView || false;
+    document.getElementById('settingCompactMode').checked = prefs.compactMode || false;
+    document.getElementById('settingTheme').value = prefs.theme || 'green';
     document.getElementById('settingMidiNote').value = prefs.midiNote || 36;
     document.getElementById('settingMidiStop').value = prefs.midiStop || 44;
     document.getElementById('settingWsRemote').checked = prefs.wsRemote || false;
@@ -92,11 +106,15 @@ function savePrefs() {
     prefs.oscHost = document.getElementById('settingOscHost').value;
     prefs.oscPort = parseInt(document.getElementById('settingOscPort').value) || 8000;
     prefs.mobileView = document.getElementById('settingMobileView').checked;
+    prefs.compactMode = document.getElementById('settingCompactMode').checked;
+    prefs.theme = document.getElementById('settingTheme').value;
     prefs.midiNote = parseInt(document.getElementById('settingMidiNote').value) || 36;
     prefs.midiStop = parseInt(document.getElementById('settingMidiStop').value) || 44;
     prefs.wsRemote = document.getElementById('settingWsRemote').checked;
     prefs.wsPort = parseInt(document.getElementById('settingWsPort').value) || 8080;
     localStorage.setItem('webcue-prefs', JSON.stringify(prefs));
+    applyTheme();
+    applyCompactMode();
     if (prefs.wsRemote) setupWebSocket(); else if (wsServer) { wsServer.close(); wsServer = null; }
     showToast('SETTINGS SAVED');
 }
@@ -209,6 +227,29 @@ function setupWebSocket() {
             } catch (err) {}
         };
     } catch (e) {}
+}
+
+function setupResizeHandle() {
+    const handle = document.getElementById('resizeHandle');
+    const editor = document.querySelector('.editor-panel');
+    let startX, startW;
+    handle.addEventListener('mousedown', e => {
+        e.preventDefault();
+        handle.classList.add('active');
+        startX = e.clientX;
+        startW = editor.offsetWidth;
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+    function onMove(e) {
+        const w = Math.max(200, Math.min(800, startW - (e.clientX - startX)));
+        editor.style.width = w + 'px';
+    }
+    function onUp() {
+        handle.classList.remove('active');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    }
 }
 
 function setupEventListeners() {
@@ -856,7 +897,7 @@ setInterval(() => {
                 if (oldBar) oldBar.remove();
                 const bar = document.createElement('div');
                 bar.className = 'progress-bar';
-                bar.style.cssText = `position:absolute;left:0;top:0;bottom:0;background:var(--qlab-green);opacity:0.25;z-index:0;width:${progress}%;transition:width 0.1s linear;`;
+                bar.style.cssText = `position:absolute;left:0;top:0;bottom:0;background:var(--accent);opacity:0.25;z-index:0;width:${progress}%;transition:width 0.1s linear;`;
                 item.appendChild(bar);
             });
         } else {

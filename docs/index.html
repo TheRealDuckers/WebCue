@@ -56,7 +56,7 @@
         <ol>
             <li>Open <a href="https://webcue.duckers.dev" style="color: var(--green);">webcue.duckers.dev</a> in your browser</li>
             <li>Click <strong>NEW</strong> to create a new show</li>
-            <li>Click <kbd>+</kbd> to add a cue</li>
+            <li>Click <kbd>+</kbd> or <strong>Import Media</strong> to add cues</li>
             <li>Select your audio or video file</li>
             <li>Press <kbd>Space</kbd> or click <strong>GO</strong> to fire</li>
         </ol>
@@ -75,6 +75,7 @@
 
         <h2 id="interface">Interface Layout</h2>
         <p><strong>Header:</strong> Show name, transport controls (PREVIEW, LOAD, STOP, FADE, GO, PANIC), Undo/Redo, action buttons</p>
+        <p><strong>Resizable Panels:</strong> Drag the divider between cue list and editor to resize</p>
         <p><strong>Cue List:</strong> Your cues - shows cue #, type (A/V/W/C/D/G), name, duration, loop indicator, color coding</p>
         <p><strong>Search:</strong> Filter cues by name, notes, or number</p>
         <p><strong>Selected Cue Bar:</strong> Above the cue list, shows the selected cue's type badge, name, and notes</p>
@@ -191,6 +192,8 @@ Values: 255, 128, 64</pre>
             <li><strong>Space = GO</strong> - Spacebar fires next cue</li>
             <li><strong>Auto-advance</strong> - Automatically fire next cue when current ends</li>
             <li><strong>Auto-save</strong> - Save show to localStorage on every change</li>
+            <li><strong>Theme</strong> - Choose accent color (Green, Blue, Amber, Purple)</li>
+            <li><strong>Compact mode</strong> - Tighter spacing for more cues visible at once</li>
             <li><strong>Crossfade default</strong> - Enable crossfade on new cues by default</li>
             <li><strong>QLC+ URL</strong> - For DMX control</li>
             <li><strong>OSC Host/Port</strong> - For external integration</li>

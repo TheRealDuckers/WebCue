@@ -70,6 +70,7 @@
         </header>
 
         <main>
+            <div class="resize-handle" id="resizeHandle"></div>
             <div class="cue-list-container">
                 <div class="cue-list-header">
                     <span>CUES <span class="count" id="cueCount">(0)</span></span>
@@ -99,7 +100,7 @@
                     </div>
                 </div>
             </div>
-
+            <div class="resize-handle" id="resizeHandle"></div>
             <div class="editor-panel">
                 <div class="editor-header">EDIT CUE</div>
                 <div class="editor-content" id="editorContent">
@@ -183,7 +184,7 @@
                         <div class="form-group">
                             <label>Color</label>
                             <div class="color-badges" id="colorPicker">
-                                <div class="color-badge selected" style="background: var(--qlab-green);" data-color="green"></div>
+                                <div class="color-badge selected" style="background: #6ee6a0;" data-color="green"></div>
                                 <div class="color-badge" style="background: #e64c4c;" data-color="red"></div>
                                 <div class="color-badge" style="background: #e6d14c;" data-color="yellow"></div>
                                 <div class="color-badge" style="background: #4c8ce6;" data-color="blue"></div>
@@ -301,6 +302,15 @@
             </div>
             <div class="settings-section">
                 <h4>View</h4>
+                <div class="setting-row"><span>Theme</span>
+                    <select id="settingTheme" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:inherit;border-radius:4px;">
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="amber">Amber</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                </div>
+                <div class="setting-row"><span>Compact mode</span><input type="checkbox" id="settingCompactMode"></div>
                 <div class="setting-row"><span>Mobile View</span><input type="checkbox" id="settingMobileView"></div>
                 <button class="btn-confirm" id="btnMobileView" style="width: 100%; margin-top: 10px;">OPEN MOBILE VIEW</button>
             </div>
