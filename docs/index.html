@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebCue Documentation - Web-based Show Control</title>
-    <meta name="description" content="Official documentation for WebCue - free, browser-based show control software. Learn how to use audio/video playback, QLC+ DMX integration, keyboard shortcuts, and more.">
-    <meta name="keywords" content="WebCue docs, show control documentation, QLab alternative docs, DMX documentation, QLC+ tutorial">
-    <meta name="author" content="WebCue">
-    <meta property="og:title" content="WebCue Documentation">
-    <meta property="og:description" content="Learn how to use WebCue - free browser-based show control">
+    <title>WebLab Documentation - Web-based Show Control</title>
+    <meta name="description" content="Official documentation for WebLab - free, browser-based show control software. Learn how to use audio/video playback, QLC+ DMX integration, keyboard shortcuts, and more.">
+    <meta name="keywords" content="WebLab docs, show control documentation, QLab alternative docs, DMX documentation, QLC+ tutorial">
+    <meta name="author" content="WebLab">
+    <meta property="og:title" content="WebLab Documentation">
+    <meta property="og:description" content="Learn how to use WebLab - free browser-based show control">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://webcue.duckers.dev/docs/">
     <meta property="og:image" content="https://webcue.duckers.dev/icon-192.svg">
@@ -19,7 +19,7 @@
 <body>
     <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-logo"><i class="fas fa-theater-masks"></i> WC</div>
+        <div class="sidebar-logo"><i class="fas fa-theater-masks"></i> WL</div>
         <div class="sidebar-section">Getting Started</div>
         <a href="#quickstart" class="sidebar-link">Quick Start</a>
         <a href="#first-show" class="sidebar-link">Your First Show</a>
@@ -49,7 +49,7 @@
     </nav>
 
     <main class="main">
-        <h1>WebCue</h1>
+        <h1>WebLab</h1>
         <p class="subtitle">Web-based show control at <strong>webcue.duckers.dev</strong></p>
 
         <h2 id="quickstart">Quick Start</h2>
@@ -130,7 +130,7 @@
         <p><span class="tag qlc">D</span> <strong>QLC+</strong> - Controls DMX lights via QLC+</p>
         <ol>
             <li>In QLC+, enable Settings > Network > Enable HTTP Server</li>
-            <li>In WebCue Settings, enter QLC+ URL</li>
+            <li>In WebLab Settings, enter QLC+ URL</li>
             <li>Cue settings: Universe (0-15), Channel (1-512), Values (0-255 comma-separated)</li>
         </ol>
         <pre>Universe: 0
@@ -157,7 +157,7 @@ Values: 255, 128, 64</pre>
         <p>Click <strong>PREVIEW</strong> or press <kbd>Ctrl</kbd>+<kbd>Space</kbd> to play a selected cue without firing the GO chain (doesn't auto-advance or trigger next cues). Useful for sound checks and testing.</p>
 
         <h2 id="undo">Undo / Redo</h2>
-        <p>WebCue tracks up to 50 history states. Use <kbd>Ctrl</kbd>+<kbd>Z</kbd> to undo and <kbd>Ctrl</kbd>+<kbd>Y</kbd> to redo changes. The undo/redo buttons in the header show available states.</p>
+        <p>WebLab tracks up to 50 history states. Use <kbd>Ctrl</kbd>+<kbd>Z</kbd> to undo and <kbd>Ctrl</kbd>+<kbd>Y</kbd> to redo changes. The undo/redo buttons in the header show available states.</p>
 
         <h2 id="drag">Drag & Drop Reordering</h2>
         <p>Drag any cue item up or down in the cue list to reorder. A green border shows the drop target.</p>
@@ -174,7 +174,7 @@ Values: 255, 128, 64</pre>
         </ul>
 
         <h2 id="websocket">Remote Control</h2>
-        <p>Enable WebSocket remote in Settings to control WebCue from another device:</p>
+        <p>Enable WebSocket remote in Settings to control WebLab from another device:</p>
         <ul>
             <li>Configure a WebSocket port (default: 8080)</li>
             <li>Send JSON commands: <code>{"action":"go"}</code>, <code>{"action":"stop"}</code>, <code>{"action":"panic"}</code>, <code>{"action":"fade"}</code>, <code>{"action":"fire","index":0}</code></li>

@@ -1,6 +1,6 @@
 {
-  "name": "WebCue - Show Control",
-  "short_name": "WebCue",
+  "name": "WebLab - Show Control",
+  "short_name": "WebLab",
   "description": "Web-based QLab alternative for show control",
   "start_url": "./index.html",
   "display": "standalone",

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'webcue-v1';
+const CACHE_NAME = 'weblab-v1';
 const ASSETS = [
   './',
   './index.html',

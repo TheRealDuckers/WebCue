@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebCue - Web-based Show Control</title>
+    <title>WebLab - Web-based Show Control</title>
     <meta name="description" content="Free, browser-based show control software. A QLab alternative that runs entirely in your browser with audio/video playback, QLC+ DMX integration, keyboard shortcuts, and PWA support.">
     <meta name="keywords" content="show control, QLab alternative, lighting control, DMX, QLC+, audio playback, video playback, theater, stage management">
-    <meta name="author" content="WebCue">
+    <meta name="author" content="WebLab">
     <meta name="theme-color" content="#1a1a1a">
-    <meta property="og:title" content="WebCue - Web-based Show Control">
+    <meta property="og:title" content="WebLab - Web-based Show Control">
     <meta property="og:description" content="Free, browser-based show control software. A QLab alternative that runs entirely in your browser.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://webcue.duckers.dev">
     <meta property="og:image" content="https://webcue.duckers.dev/icon-192.svg">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="WebCue - Web-based Show Control">
+    <meta name="twitter:title" content="WebLab - Web-based Show Control">
     <meta name="twitter:description" content="Free, browser-based show control software. A QLab alternative that runs entirely in your browser.">
     <meta name="twitter:image" content="https://webcue.duckers.dev/icon-192.svg">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -29,8 +29,8 @@
 </head>
 <body>
     <div class="startup-screen" id="startupScreen">
-        <div class="startup-logo"><i class="fas fa-theater-masks"></i> WC</div>
-        <div class="startup-subtitle">WebCue - Web-based Show Control</div>
+        <div class="startup-logo"><i class="fas fa-theater-masks"></i> WL</div>
+        <div class="startup-subtitle">WebLab - Web-based Show Control</div>
         <div class="startup-actions">
             <button class="startup-btn" onclick="newShow()"><i class="fas fa-plus"></i> New Show</button>
             <button class="startup-btn" onclick="openShow()"><i class="fas fa-folder-open"></i> Open / Import</button>
@@ -48,7 +48,7 @@
     <div id="mainApp" style="display: none; flex-direction: column; height: 100vh;">
         <header>
             <div class="show-title">
-                <h1>WC</h1>
+                <h1>WL</h1>
                 <input type="text" id="showName" value="Untitled Show">
             </div>
             <div class="transport">
@@ -321,7 +321,7 @@
     </div>
 
     <div class="toast" id="toast"></div>
-    <div class="install-prompt" id="installPrompt"><span>Install WebCue</span><button id="btnInstall">INSTALL</button></div>
+    <div class="install-prompt" id="installPrompt"><span>Install WebLab</span><button id="btnInstall">INSTALL</button></div>
     <input type="file" id="fileInput" accept=".json" style="display: none;">
     <input type="file" id="mediaImportInput" accept="audio/*,video/*" multiple style="display: none;">
 
