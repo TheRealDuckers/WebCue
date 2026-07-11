@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/webcue.css">
+    <link rel="stylesheet" href="css/webcue.css?v=2">
 </head>
 <body>
     <div class="startup-screen" id="startupScreen">
@@ -47,19 +47,24 @@
 
     <div id="mainApp" style="display: none; flex-direction: column; height: 100vh;">
         <header>
-            <div class="show-title">
-                <h1>WL</h1>
-                <input type="text" id="showName" value="Untitled Show">
+            <div class="header-left">
+                <div class="show-title">
+                    <h1>WL</h1>
+                    <input type="text" id="showName" value="Untitled Show">
+                </div>
+                <button class="btn-go" id="btnGo" title="Fire selected cue (Space)"><i class="fas fa-play"></i> GO</button>
+                <div class="header-cue-info" id="headerCueInfo" style="display:none;">
+                    <span class="header-cue-name" id="headerCueName">Cue Name</span>
+                    <span class="header-cue-desc" id="headerCueDesc"></span>
+                </div>
             </div>
-            <div class="transport">
+            <div class="header-right">
                 <button class="btn-preview" id="btnPreview" title="Preview selected cue (Ctrl+Space)"><i class="fas fa-headphones"></i> PREVIEW</button>
                 <button class="btn-load" id="btnLoad" title="Pre-load all media"><i class="fas fa-download"></i> LOAD</button>
                 <button class="btn-stop" id="btnStop" title="Stop all"><i class="fas fa-stop"></i> STOP</button>
                 <button class="btn-fade" id="btnFade" title="Fade out audio"><i class="fas fa-feather-alt"></i> FADE</button>
-                <button class="btn-go" id="btnGo" title="Fire selected cue (Space)"><i class="fas fa-play"></i> GO</button>
                 <button class="btn-panic" id="btnPanic" title="All stop + DMX blackout (Shift+Esc)"><i class="fas fa-ban"></i> PANIC</button>
-            </div>
-            <div class="header-actions">
+                <div class="header-divider"></div>
                 <button id="btnUndo" title="Undo (Ctrl+Z)" disabled><i class="fas fa-undo"></i></button>
                 <button id="btnRedo" title="Redo (Ctrl+Y)" disabled><i class="fas fa-redo"></i></button>
                 <button id="btnNew" title="New Show"><i class="fas fa-plus"></i></button>
@@ -83,11 +88,6 @@
                 <div class="cue-search" id="cueSearch">
                     <input type="text" id="searchInput" placeholder="Filter cues..." />
                 </div>
-                <div class="selected-cue-info" id="selectedCueInfo" style="display: none;">
-                    <span class="selected-cue-type" id="selCueType">A</span>
-                    <span class="selected-cue-name" id="selCueName">Cue Name</span>
-                    <span class="selected-cue-desc" id="selCueDesc">Notes</span>
-                </div>
                 <div class="cue-list" id="cueList">
                     <div class="cue-drop-overlay" id="cueDropOverlay">DROP FILES TO ADD CUES</div>
                     <div class="cue-empty" id="cueEmpty">
@@ -102,7 +102,7 @@
             </div>
             <div class="resize-handle" id="resizeHandle"></div>
             <div class="editor-panel">
-                <div class="editor-header">EDIT CUE</div>
+                <div class="editor-header">EDIT CUE <span class="cue-number-edit" id="cueNumberEdit" style="display:none;">#<input type="number" id="cueNumberInput" min="1" style="width:50px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:2px 6px;font-family:inherit;font-size:12px;border-radius:3px;"></span></div>
                 <div class="editor-content" id="editorContent">
                     <div class="editor-empty" id="editorEmpty">Select a cue</div>
                     <div id="editorForm" style="display: none;">
@@ -121,6 +121,10 @@
                                 <option value="qlc">QLC+</option>
                                 <option value="group">GROUP</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="cueNotes" placeholder="Cue notes..." style="min-height:60px;"></textarea>
                         </div>
                         <div class="form-group file-input-wrapper" id="fileGroup">
                             <label>Media File</label>
@@ -176,10 +180,6 @@
                         <div class="form-group">
                             <label>Go To Cue #</label>
                             <input type="number" id="cueGoTo" min="0" placeholder="(none)">
-                        </div>
-                        <div class="form-group">
-                            <label>Notes</label>
-                            <textarea id="cueNotes" placeholder="Notes..."></textarea>
                         </div>
                         <div class="form-group">
                             <label>Color</label>
@@ -325,6 +325,6 @@
     <input type="file" id="fileInput" accept=".json" style="display: none;">
     <input type="file" id="mediaImportInput" accept="audio/*,video/*" multiple style="display: none;">
 
-    <script src="js/webcue.js"></script>
+    <script src="js/webcue.js?v=2"></script>
 </body>
 </html>

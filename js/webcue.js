@@ -6,6 +6,7 @@ let isLoaded = false;
 let loadedCues = new Set();
 let audioElements = {};
 let videoElements = {};
+let fileStore = {};
 let startTime = 0;
 let prefs = { spaceFiresNext: true, autoAdvance: false, autoSave: true, defaultCrossfade: false, qlcUrl: '', oscHost: '', oscPort: 0, mobileView: false, midiNote: 36, midiStop: 44, wsRemote: false, wsPort: 8080, compactMode: false, theme: 'green' };
 let deferredPrompt = null;
@@ -121,29 +122,36 @@ function savePrefs() {
 
 function pushHistory() {
     history = history.slice(0, historyIndex + 1);
-    history.push(JSON.parse(JSON.stringify(show)));
+    history.push(JSON.parse(JSON.stringify(show, (k, v) => k === 'fileData' ? undefined : v)));
     if (history.length > 50) history.shift();
     historyIndex = history.length - 1;
     updateUndoRedoButtons();
     if (prefs.autoSave) { showAutoSaved(); saveToLocalStorage(); }
 }
 
+function restoreShow(snap) {
+    show = JSON.parse(JSON.stringify(snap));
+    for (const cue of show.cues) {
+        if (fileStore[cue.id]) cue.fileData = fileStore[cue.id];
+    }
+    showNameInput.value = show.name;
+    isLoaded = false; loadedCues.clear(); loadDot.classList.remove('loaded'); loadText.textContent = 'NOT LOADED';
+    renderCueList(); loadCueIntoEditor(); updateStatus(); updateNextCueInfo(); updateNotesDisplay();
+    updateUndoRedoButtons();
+}
+
 function undo() {
     if (historyIndex <= 0) return;
     historyIndex--;
-    show = JSON.parse(JSON.stringify(history[historyIndex]));
-    showNameInput.value = show.name;
-    renderCueList(); loadCueIntoEditor(); updateStatus(); updateNextCueInfo(); updateNotesDisplay();
-    updateUndoRedoButtons(); showToast('UNDO');
+    restoreShow(history[historyIndex]);
+    showToast('UNDO');
 }
 
 function redo() {
     if (historyIndex >= history.length - 1) return;
     historyIndex++;
-    show = JSON.parse(JSON.stringify(history[historyIndex]));
-    showNameInput.value = show.name;
-    renderCueList(); loadCueIntoEditor(); updateStatus(); updateNextCueInfo(); updateNotesDisplay();
-    updateUndoRedoButtons(); showToast('REDO');
+    restoreShow(history[historyIndex]);
+    showToast('REDO');
 }
 
 function updateUndoRedoButtons() {
@@ -186,7 +194,6 @@ function setupPWA() {
     document.getElementById('btnInstall').addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; document.getElementById('installPrompt').classList.remove('show'); } });
 }
 
-// MIDI
 function setupMIDI() {
     if (!navigator.requestMIDIAccess) return;
     navigator.requestMIDIAccess().then(access => {
@@ -207,7 +214,6 @@ function setupMIDI() {
     }).catch(() => {});
 }
 
-// WebSocket remote
 function setupWebSocket() {
     if (wsServer) { wsServer.close(); wsServer = null; }
     if (!prefs.wsRemote) return;
@@ -290,6 +296,13 @@ function setupEventListeners() {
         renderCueList();
     });
 
+    document.getElementById('cueNumberInput').addEventListener('change', function () {
+        const num = parseInt(this.value);
+        if (num > 0 && num !== selectedCueIndex + 1) {
+            moveCueToNumber(selectedCueIndex, num);
+        }
+    });
+
     ['cueName', 'cueType', 'cueDuration', 'cueFadeIn', 'cueFadeOut', 'cueVolume', 'cueCommand', 'cueNotes', 'qlcUniverse', 'qlcChannel', 'qlcValues', 'cueGoTo'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => { updateSelectedCue(); if (id === 'cueVolume') document.getElementById('volumeDisplay').textContent = el.value + '%'; if (id === 'cueNotes') updateNotesDisplay(); });
@@ -317,7 +330,9 @@ function setupEventListeners() {
             if (selectedCueIndex >= 0) {
                 const reader = new FileReader();
                 reader.onload = ev => {
-                    show.cues[selectedCueIndex].fileData = ev.target.result;
+                    const cue = show.cues[selectedCueIndex];
+                    fileStore[cue.id] = ev.target.result;
+                    cue.fileData = ev.target.result;
                     isLoaded = false; loadedCues.clear(); loadDot.classList.remove('loaded'); loadText.textContent = 'NOT LOADED';
                     pushHistory();
                 };
@@ -340,7 +355,7 @@ function setupEventListeners() {
         e.target.value = '';
     });
 
-    // Drag-and-drop files onto cue list
+
     const cueListEl = document.getElementById('cueList');
     const dropOverlay = document.getElementById('cueDropOverlay');
     cueListEl.addEventListener('dragenter', e => {
@@ -526,10 +541,19 @@ function confirmDelete() {
     pushHistory(); renderCueList(); loadCueIntoEditor(); showToast('CUE DELETED');
 }
 
+function moveCueToNumber(fromIndex, targetNum) {
+    if (fromIndex < 0 || fromIndex >= show.cues.length) return;
+    const toIndex = Math.max(0, Math.min(targetNum - 1, show.cues.length - 1));
+    if (fromIndex === toIndex) return;
+    const [moved] = show.cues.splice(fromIndex, 1);
+    show.cues.splice(toIndex, 0, moved);
+    selectedCueIndex = toIndex;
+    pushHistory(); renderCueList(); loadCueIntoEditor(); scrollToSelected();
+}
+
 function updateSelectedCue() {
     if (selectedCueIndex < 0) return;
     const cue = show.cues[selectedCueIndex];
-    cue.name = document.getElementById('cueName').value;
     cue.type = document.getElementById('cueType').value;
     cue.duration = parseFloat(document.getElementById('cueDuration').value) || 0;
     cue.fadeIn = parseFloat(document.getElementById('cueFadeIn').value) || 0;
@@ -609,7 +633,6 @@ function fireCue(index) {
     const cue = show.cues[index];
     if (!cue) return;
 
-    // Crossfade: fade out current audio before starting new
     if (cue.crossfade && runningCueIndex >= 0) {
         const currentCue = show.cues[runningCueIndex];
         if (currentCue && currentCue.type === 'audio' && audioElements[runningCueIndex]) {
@@ -626,11 +649,9 @@ function fireCue(index) {
             }, interval);
         }
         showToast('CROSSFADE');
-    } else {
-        stopCue();
     }
+    // Note: previous audio continues playing layered underneath
 
-    // Group cue: fire all children
     if (cue.type === 'group' && cue.children && cue.children.length > 0) {
         runningCueIndex = index;
         nextCueIndex = cue.goTo > 0 ? cue.goTo - 1 : index + 1;
@@ -639,7 +660,16 @@ function fireCue(index) {
         for (const childIdx of cue.children) {
             if (childIdx >= 0 && childIdx < show.cues.length) fireSingle(childIdx);
         }
-        if (prefs.autoAdvance && nextCueIndex < show.cues.length && nextCueIndex >= 0) setTimeout(goCue, 50);
+        if (cue.duration > 0) {
+            setTimeout(() => {
+                if (runningCueIndex === index) {
+                    runningCueIndex = -1; renderCueList(); updateStatus(); updateNotesDisplay();
+                    if (prefs.autoAdvance && nextCueIndex < show.cues.length && nextCueIndex >= 0) goCue();
+                }
+            }, cue.duration * 1000);
+        } else if (prefs.autoAdvance && nextCueIndex < show.cues.length && nextCueIndex >= 0) {
+            setTimeout(goCue, 50);
+        }
         return;
     }
 
@@ -808,20 +838,22 @@ function renderCueList() {
 }
 
 function updateSelectedCueInfo() {
-    const info = document.getElementById('selectedCueInfo');
+    const info = document.getElementById('headerCueInfo');
     if (selectedCueIndex < 0 || !show.cues[selectedCueIndex]) { info.style.display = 'none'; return; }
     const cue = show.cues[selectedCueIndex];
-    const types = { audio: 'A', video: 'V', wait: 'W', command: 'C', qlc: 'D', group: 'G' };
-    document.getElementById('selCueType').textContent = types[cue.type] || '?';
-    document.getElementById('selCueName').textContent = cue.name;
-    document.getElementById('selCueDesc').textContent = cue.notes || '';
+    document.getElementById('headerCueName').textContent = cue.name;
+    document.getElementById('headerCueDesc').textContent = cue.notes || '';
     info.style.display = 'flex';
 }
 
 function loadCueIntoEditor() {
-    if (selectedCueIndex < 0) { editorEmpty.style.display = 'flex'; editorForm.style.display = 'none'; editorFooter.style.display = 'none'; statusNotes.textContent = ''; updateSelectedCueInfo(); return; }
+    if (selectedCueIndex < 0) { editorEmpty.style.display = 'flex'; editorForm.style.display = 'none'; editorFooter.style.display = 'none'; statusNotes.textContent = ''; updateSelectedCueInfo(); document.getElementById('cueNumberEdit').style.display = 'none'; return; }
     const cue = show.cues[selectedCueIndex];
     editorEmpty.style.display = 'none'; editorForm.style.display = 'block'; editorFooter.style.display = 'block';
+    document.getElementById('cueNumberEdit').style.display = 'inline';
+    document.getElementById('cueNumberInput').value = selectedCueIndex + 1;
+    document.getElementById('cueNumberInput').min = 1;
+    document.getElementById('cueNumberInput').max = show.cues.length;
     document.getElementById('cueName').value = cue.name;
     document.getElementById('cueType').value = cue.type;
     document.getElementById('cueDuration').value = cue.duration || '';
@@ -849,7 +881,6 @@ function loadCueIntoEditor() {
     else if (cue.type === 'qlc') document.getElementById('qlcGroup').style.display = 'block';
     else if (cue.type === 'group') document.getElementById('groupChildrenGroup').style.display = 'block';
 
-    // Show/hide loop and crossfade for non-media cue types
     document.getElementById('cueLoop').closest('.form-row-inline').parentElement.style.display = (cue.type === 'audio' || cue.type === 'video') ? 'flex' : 'none';
     document.getElementById('cueCrossfade').closest('.form-row-inline').parentElement.style.display = (cue.type === 'audio') ? 'flex' : 'none';
 
@@ -860,7 +891,7 @@ function loadCueIntoEditor() {
 
 function updateStatus() { runningCueIndex >= 0 ? (statusDot.classList.add('active'), statusText.textContent = show.cues[runningCueIndex].name) : (statusDot.classList.remove('active'), statusText.textContent = 'READY'); }
 function updateNextCueInfo() { nextText.textContent = nextCueIndex < show.cues.length && nextCueIndex >= 0 ? `NEXT: ${show.cues[nextCueIndex].name}` : ''; }
-function saveToLocalStorage() { try { localStorage.setItem('webcue-show', JSON.stringify(show)); } catch (e) {} }
+function saveToLocalStorage() { try { localStorage.setItem('webcue-show', JSON.stringify(show, (k, v) => k === 'fileData' ? undefined : v)); } catch (e) {} }
 function loadFromLocalStorage() {
     try {
         const saved = localStorage.getItem('webcue-show');
@@ -904,7 +935,6 @@ setInterval(() => {
             countdownDisplay.textContent = '';
         }
 
-        // Update show timer
         const showElapsed = Date.now() - startTime;
         if (show._showStart) showElapsed = Date.now() - show._showStart;
     } else {
@@ -913,6 +943,21 @@ setInterval(() => {
     }
 }, 50);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').then((reg) => {
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          newWorker.postMessage({ action: 'skipWaiting' });
+        }
+      });
+    });
+    let preventReload = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!preventReload) { preventReload = true; window.location.reload(); }
+    });
+  }).catch(() => {});
+}
 
 init();

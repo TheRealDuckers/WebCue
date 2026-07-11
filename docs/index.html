@@ -40,6 +40,8 @@
         <a href="#undo" class="sidebar-link">Undo / Redo</a>
         <a href="#drag" class="sidebar-link">Drag & Drop</a>
         <a href="#search" class="sidebar-link">Cue Search</a>
+        <a href="#cuenumber" class="sidebar-link">Cue Number</a>
+        <a href="#install" class="sidebar-link">Install / PWA</a>
         <a href="#midi" class="sidebar-link">MIDI Input</a>
         <a href="#websocket" class="sidebar-link">Remote Control</a>
         <div class="sidebar-section">Advanced</div>
@@ -60,7 +62,7 @@
             <li>Select your audio or video file</li>
             <li>Press <kbd>Space</kbd> or click <strong>GO</strong> to fire</li>
         </ol>
-        <div class="note"><strong>Tip:</strong> Before your show, click <strong>LOAD</strong> to pre-load all audio/video files. This ensures instant playback without loading delays.</div>
+        <div class="note"><strong>Required:</strong> Before your show, click <strong>LOAD</strong> to prepare all audio/video files. Media cues will not play until loaded.</div>
 
         <h2 id="first-show">Your First Show</h2>
         <ol>
@@ -74,11 +76,11 @@
         </ol>
 
         <h2 id="interface">Interface Layout</h2>
-        <p><strong>Header:</strong> Show name, transport controls (PREVIEW, LOAD, STOP, FADE, GO, PANIC), Undo/Redo, action buttons</p>
+        <p><strong>Header (left):</strong> Show name, <strong>GO button</strong> (big, accent-colored), selected cue name + notes</p>
+        <p><strong>Header (right):</strong> Color-coded transport buttons (PREVIEW=orange, LOAD=teal, STOP=red, FADE=yellow, PANIC=dark red), then undo/redo and action buttons</p>
         <p><strong>Resizable Panels:</strong> Drag the divider between cue list and editor to resize</p>
         <p><strong>Cue List:</strong> Your cues - shows cue #, type (A/V/W/C/D/G), name, duration, loop indicator, color coding</p>
         <p><strong>Search:</strong> Filter cues by name, notes, or number</p>
-        <p><strong>Selected Cue Bar:</strong> Above the cue list, shows the selected cue's type badge, name, and notes</p>
         <p><strong>Editor:</strong> Edit selected cue - name, type, file, timing, volume, notes, color, loop, crossfade</p>
         <p><strong>Footer:</strong> Status (running cue), notes, auto-save indicator, load status, elapsed time, countdown, keyboard hints</p>
 
@@ -97,14 +99,14 @@
             <tr><td><kbd>Delete</kbd></td><td>Delete selected cue (with confirmation)</td></tr>
         </table>
 
-        <h2 id="go-behavior">GO Behavior (QLab-style)</h2>
+        <h2 id="go-behavior">GO Behavior</h2>
         <p>When you press GO:</p>
         <ol>
             <li>Fires the currently selected cue</li>
             <li>Automatically selects the <strong>next cue</strong></li>
             <li>Next GO fires that next cue</li>
         </ol>
-        <p>This is exactly like QLab's GO pedal - just keep pressing GO to fire through your show in order.</p>
+        <p>Audio from previous cues continues playing layered underneath new cues. Use STOP or FADE to silence. Enable <strong>Crossfade</strong> on a cue to fade out previous audio when it fires.</p>
 
         <h2 id="audio-video">Audio & Video Cues</h2>
         <ul>
@@ -138,16 +140,17 @@ Channel: 1
 Values: 255, 128, 64</pre>
 
         <h2 id="group">Group Cues</h2>
-        <p><span class="tag">G</span> <strong>GROUP</strong> - Fires multiple cues simultaneously</p>
-        <p>Enter cue numbers (1-indexed) separated by commas in the "Group Children" field. When a GROUP cue fires, all child cues fire at once.</p>
+        <p><span class="tag">G</span> <strong>GROUP</strong> - Fires multiple child cues simultaneously</p>
+        <p>Enter cue numbers (1-indexed, e.g. <code>3,4,5</code>) in the "Group Children" field. When the GROUP cue fires, all children fire at once. Set a <strong>Duration</strong> to auto-advance to the next cue after that many seconds. If duration is 0, auto-advance (if enabled) fires immediately.</p>
 
         <h2 id="autoload">Loading Media</h2>
-        <p>For reliable instant playback, pre-load all media before your show:</p>
+        <p><strong>Media must be loaded before playback.</strong> Click <strong>LOAD</strong> in the transport bar to prepare all audio/video files:</p>
         <ol>
-            <li>Click <strong>LOAD</strong> in transport bar</li>
-            <li>Loaded cues show a green checkmark ✓</li>
+            <li>Add media cues with audio/video files</li>
+            <li>Click <strong>LOAD</strong> — loaded cues show a green checkmark ✓</li>
+            <li>Cues will not play unless loaded</li>
         </ol>
-        <div class="note"><strong>Important:</strong> If media doesn't load, you may need to interact with the page first (browser security requires user gesture for media playback).</div>
+        <div class="note"><strong>Important:</strong> Browser security requires a user gesture (click/tap) before media can load. If LOAD doesn't work, interact with the page first.</div>
 
         <h2 id="loop">Loop & Crossfade</h2>
         <p><strong>Loop:</strong> Enable on audio/video cues to repeat playback until manually stopped or the next cue fires.</p>
@@ -156,11 +159,23 @@ Values: 255, 128, 64</pre>
         <h2 id="preview">Preview</h2>
         <p>Click <strong>PREVIEW</strong> or press <kbd>Ctrl</kbd>+<kbd>Space</kbd> to play a selected cue without firing the GO chain (doesn't auto-advance or trigger next cues). Useful for sound checks and testing.</p>
 
+        <h2 id="install">Install / PWA</h2>
+        <p>WebLab is a Progressive Web App. Install it for offline access and a native-like experience:</p>
+        <ul>
+            <li><strong>Desktop:</strong> Open <a href="https://webcue.duckers.dev">webcue.duckers.dev</a> in Chrome/Edge, click the install icon in the address bar</li>
+            <li><strong>Mobile:</strong> Open in Chrome/Safari, tap "Add to Home Screen" from the share menu</li>
+            <li><strong>Local server:</strong> <code>python -m http.server 8000</code> in the project directory, then visit <code>http://localhost:8000</code></li>
+        </ul>
+        <p>Once installed, the app works offline with cached assets. Show data is stored in your browser's localStorage.</p>
+
         <h2 id="undo">Undo / Redo</h2>
         <p>WebLab tracks up to 50 history states. Use <kbd>Ctrl</kbd>+<kbd>Z</kbd> to undo and <kbd>Ctrl</kbd>+<kbd>Y</kbd> to redo changes. The undo/redo buttons in the header show available states.</p>
 
         <h2 id="drag">Drag & Drop Reordering</h2>
         <p>Drag any cue item up or down in the cue list to reorder. A green border shows the drop target.</p>
+
+        <h2 id="cuenumber">Cue Number</h2>
+        <p>Each cue has a number shown in the editor header. Edit this number to move the cue to a different position in the list. For example, changing cue #5 to #3 shifts it between the current #2 and #3.</p>
 
         <h2 id="search">Cue Search</h2>
         <p>Use the search bar above the cue list to filter cues by name, notes, type, or number. Non-matching cues are hidden.</p>
@@ -181,11 +196,15 @@ Values: 255, 128, 64</pre>
         </ul>
 
         <h2 id="osc">OSC Output</h2>
-        <p>Send cue data to other apps via OSC/HTTP:</p>
-        <ul>
-            <li>Configure host and port in Settings</li>
-            <li>JSON is sent on each GO: <code>{"cue": 1, "name": "Cue 1", "type": "audio"}</code></li>
-        </ul>
+        <p>Sends cue data as HTTP POST to a configured host/port on every GO. This is <strong>not</strong> true OSC — it sends JSON over HTTP (useful for triggering other apps like OBS, Resolume, or custom middleware).</p>
+        <p>Configure in Settings: Host (e.g. <code>127.0.0.1</code>) and Port (e.g. <code>8000</code>).</p>
+        <p>Payload sent on each GO:</p>
+        <pre>{
+  "cue": 1,
+  "name": "Opening Music",
+  "type": "audio"
+}</pre>
+        <p>This is separate from <strong>Command cues</strong> — Command cues send a configurable URL when fired, while OSC Output is a blanket setting that fires on every GO.</p>
 
         <h2 id="settings">Settings</h2>
         <ul>
