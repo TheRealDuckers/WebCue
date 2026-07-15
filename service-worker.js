@@ -1,4 +1,4 @@
-const CACHE_NAME = 'weblab-v2';
+const CACHE_NAME = 'weblab-v5';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
